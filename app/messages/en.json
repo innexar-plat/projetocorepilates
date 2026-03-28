@@ -1,0 +1,115 @@
+{
+  "common": {
+    "appName": "Core Pilates",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "tryAgain": "Try again",
+    "backHome": "Back to home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "learnMore": "Learn more",
+    "getStarted": "Get started"
+  },
+  "nav": {
+    "home": "Home",
+    "plans": "Plans",
+    "classes": "Classes",
+    "gallery": "Gallery",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Log in",
+    "register": "Sign up",
+    "portal": "My Portal",
+    "logout": "Log out"
+  },
+  "home": {
+    "hero": {
+      "headline": "Transform your body and mind with Pilates",
+      "subheadline": "Join Core Pilates and discover the most effective method for your well-being",
+      "cta": "Start today"
+    },
+    "benefits": {
+      "title": "Why choose Core Pilates?",
+      "flexibility": "Improved flexibility",
+      "strength": "Strength and muscle tone",
+      "posture": "Posture correction",
+      "mindfulness": "Mindfulness and focus"
+    }
+  },
+  "plans": {
+    "title": "Choose your plan",
+    "subtitle": "Transparent pricing with no surprises",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "perMonth": "/month",
+    "cta": "Choose plan",
+    "mostPopular": "Most popular",
+    "starter": {
+      "name": "Starter",
+      "description": "Perfect for beginners",
+      "price": "$99"
+    },
+    "essential": {
+      "name": "Essential",
+      "description": "For regular practitioners",
+      "price": "$179"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "For dedicated athletes",
+      "price": "$249"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "email": "E-mail",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up"
+    },
+    "register": {
+      "title": "Create your account",
+      "name": "Full name",
+      "email": "E-mail",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    }
+  },
+  "portal": {
+    "welcome": "Welcome, {name}!",
+    "myClasses": "My Classes",
+    "mySubscription": "My Subscription",
+    "paymentHistory": "Payment History",
+    "profile": "Profile",
+    "bookClass": "Book a class",
+    "cancelBooking": "Cancel booking",
+    "noClasses": "No upcoming classes"
+  },
+  "errors": {
+    "unauthorized": "You must be logged in to access this page",
+    "forbidden": "You don't have permission to access this page",
+    "notFound": "Page not found",
+    "serverError": "An unexpected error occurred. Please try again later.",
+    "rateLimited": "Too many requests. Please wait a moment and try again.",
+    "validationFailed": "Please check your input and try again"
+  },
+  "contact": {
+    "title": "Contact us",
+    "name": "Name",
+    "email": "E-mail",
+    "phone": "Phone",
+    "message": "Message",
+    "submit": "Send message",
+    "success": "Message sent! We'll get back to you soon."
+  }
+}

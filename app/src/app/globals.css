@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand Colors */
+    --color-gold: #D4AF37;
+    --color-gold-light: #E8CC6A;
+    --color-gold-dark: #A08020;
+
+    /* Dark Theme */
+    --color-dark: #0B0F14;
+    --color-dark-card: #141A22;
+    --color-dark-border: #1E2836;
+
+    /* Neutral */
+    --color-text-primary: #F5F5F0;
+    --color-text-secondary: #A0A8B0;
+    --color-text-muted: #6B7280;
+
+    /* Status */
+    --color-success: #22C55E;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+    --color-info: #3B82F6;
+  }
+
+  body {
+    @apply bg-[#0B0F14] text-[#F5F5F0] antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-gold {
+    background: linear-gradient(135deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, var(--color-gold-dark), var(--color-gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

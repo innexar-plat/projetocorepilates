@@ -1,0 +1,480 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ─────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  UNPAID
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELED
+  WAITLIST
+  ATTENDED
+  NO_SHOW
+}
+
+enum ClassDayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum ClassSessionStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELED
+}
+
+enum PaymentStatus {
+  SUCCEEDED
+  PENDING
+  FAILED
+  REFUNDED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  NEGOTIATING
+  CONVERTED
+  LOST
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum ReferralStatus {
+  PENDING
+  CONVERTED
+  EXPIRED
+}
+
+enum FitnessLevel {
+  SEDENTARY
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+// ─── USERS ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id               String    @id @default(uuid())
+  name             String    @db.VarChar(100)
+  email            String    @unique @db.VarChar(255)
+  emailVerified    DateTime?
+  passwordHash     String?   @db.VarChar(255)
+  phone            String?   @db.VarChar(20)
+  role             UserRole  @default(CLIENT)
+  avatarUrl        String?   @db.VarChar(500)
+  stripeCustomerId String?   @unique @db.VarChar(100)
+  isActive              Boolean   @default(true)
+  passwordResetToken    String?   @db.VarChar(255)
+  passwordResetExpiry   DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
+
+  subscription     Subscription?
+  bookings         Booking[]
+  payments         Payment[]
+  supportTickets   SupportTicket[]
+  ticketMessages   TicketMessage[]
+  referralsSent    Referral[]      @relation("ReferrerRelation")
+  referralReceived Referral?       @relation("ReferredRelation")
+  posts            Post[]
+  clientProfile    ClientProfile?
+  contracts        Contract[]
+
+  @@index([email])
+  @@index([stripeCustomerId])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+// ─── PLANS ─────────────────────────────────────────────────────────────────────
+
+model Plan {
+  id              String   @id @default(uuid())
+  name            String   @db.VarChar(100)
+  description     String?  @db.Text
+  price           Decimal  @db.Decimal(15, 2)
+  stripePriceId   String   @unique @db.VarChar(100)
+  stripeProductId String   @unique @db.VarChar(100)
+  classesPerMonth Int
+  isActive        Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@index([isActive])
+  @@map("plans")
+}
+
+// ─── SUBSCRIPTIONS ─────────────────────────────────────────────────────────────
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  planId               String
+  stripeSubscriptionId String             @unique @db.VarChar(100)
+  status               SubscriptionStatus
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  classesUsedThisMonth Int                @default(0)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([stripeSubscriptionId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+// ─── CLASSES ───────────────────────────────────────────────────────────────────
+
+model Class {
+  id          String         @id @default(uuid())
+  title       String         @db.VarChar(100)
+  description String?        @db.Text
+  instructor  String         @db.VarChar(100)
+  dayOfWeek   ClassDayOfWeek
+  startTime   String         @db.VarChar(5)
+  durationMin Int            @default(60)
+  maxCapacity Int            @default(10)
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  sessions ClassSession[]
+
+  @@index([dayOfWeek])
+  @@index([isActive])
+  @@map("classes")
+}
+
+// ─── CLASS SESSIONS ────────────────────────────────────────────────────────────
+
+model ClassSession {
+  id              String             @id @default(uuid())
+  classId         String
+  date            DateTime           @db.Date
+  currentCapacity Int                @default(0)
+  status          ClassSessionStatus @default(SCHEDULED)
+  notes           String?            @db.VarChar(500)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  class    Class     @relation(fields: [classId], references: [id])
+  bookings Booking[]
+
+  @@unique([classId, date])
+  @@index([classId])
+  @@index([date])
+  @@index([status])
+  @@map("class_sessions")
+}
+
+// ─── BOOKINGS ──────────────────────────────────────────────────────────────────
+
+model Booking {
+  id               String        @id @default(uuid())
+  userId           String
+  classSessionId   String
+  status           BookingStatus @default(CONFIRMED)
+  waitlistPosition Int?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  classSession ClassSession @relation(fields: [classSessionId], references: [id])
+
+  @@unique([userId, classSessionId])
+  @@index([userId])
+  @@index([classSessionId])
+  @@index([status])
+  @@map("bookings")
+}
+
+// ─── PAYMENTS ──────────────────────────────────────────────────────────────────
+
+model Payment {
+  id                    String        @id @default(uuid())
+  userId                String
+  stripePaymentIntentId String?       @unique @db.VarChar(100)
+  stripeInvoiceId       String?       @unique @db.VarChar(100)
+  amount                Decimal       @db.Decimal(15, 2)
+  currency              String        @default("usd") @db.VarChar(3)
+  status                PaymentStatus
+  description           String?       @db.VarChar(255)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ─── LEADS ─────────────────────────────────────────────────────────────────────
+
+model Lead {
+  id        String     @id @default(uuid())
+  name      String     @db.VarChar(100)
+  email     String     @db.VarChar(255)
+  phone     String?    @db.VarChar(20)
+  source    String?    @db.VarChar(50)
+  status    LeadStatus @default(NEW)
+  notes     String?    @db.Text
+  utm       Json?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+// ─── POSTS ─────────────────────────────────────────────────────────────────────
+
+model Post {
+  id          String     @id @default(uuid())
+  authorId    String
+  title       String     @db.VarChar(200)
+  slug        String     @unique @db.VarChar(220)
+  excerpt     String?    @db.VarChar(500)
+  content     String     @db.Text
+  coverUrl    String?    @db.VarChar(500)
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  metaTitle   String?    @db.VarChar(60)
+  metaDesc    String?    @db.VarChar(160)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("posts")
+}
+
+// ─── GALLERY ───────────────────────────────────────────────────────────────────
+
+model GalleryImage {
+  id        String   @id @default(uuid())
+  title     String?  @db.VarChar(100)
+  url       String   @db.VarChar(500)
+  altText   String?  @db.VarChar(200)
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([isActive])
+  @@index([order])
+  @@map("gallery_images")
+}
+
+// ─── SUPPORT TICKETS ───────────────────────────────────────────────────────────
+
+model SupportTicket {
+  id        String       @id @default(uuid())
+  userId    String
+  subject   String       @db.VarChar(200)
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id])
+  messages TicketMessage[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+model TicketMessage {
+  id        String   @id @default(uuid())
+  ticketId  String
+  userId    String
+  message   String   @db.Text
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [ticketId], references: [id])
+  user   User          @relation(fields: [userId], references: [id])
+
+  @@index([ticketId])
+  @@map("ticket_messages")
+}
+
+// ─── REFERRALS ─────────────────────────────────────────────────────────────────
+
+model Referral {
+  id          String         @id @default(uuid())
+  referrerId  String
+  referredId  String?        @unique
+  code        String         @unique @db.VarChar(20)
+  status      ReferralStatus @default(PENDING)
+  rewardPaid  Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  convertedAt DateTime?
+
+  referrer User  @relation("ReferrerRelation", fields: [referrerId], references: [id])
+  referred User? @relation("ReferredRelation", fields: [referredId], references: [id])
+
+  @@index([referrerId])
+  @@index([code])
+  @@index([status])
+  @@map("referrals")
+}
+
+// ─── CLIENT PROFILES ───────────────────────────────────────────────────────────
+
+model ClientProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  // ── Personal Info ───────────────────────────────────────────────────────────
+  dateOfBirth       DateTime? @db.Date
+  gender            Gender?
+
+  // ── Address ─────────────────────────────────────────────────────────────────
+  street            String?   @db.VarChar(200)
+  complement        String?   @db.VarChar(100)
+  city              String?   @db.VarChar(100)
+  state             String?   @db.VarChar(50)
+  zipCode           String?   @db.VarChar(20)
+  country           String    @default("US") @db.VarChar(3)
+
+  // ── Emergency Contact ────────────────────────────────────────────────────────
+  emergencyName     String?   @db.VarChar(100)
+  emergencyPhone    String?   @db.VarChar(20)
+  emergencyRelation String?   @db.VarChar(50)
+
+  // ── Health History ───────────────────────────────────────────────────────────
+  allergies             String?   @db.Text
+  medications           String?   @db.Text
+  preExistingConditions String?   @db.Text
+  surgeries             String?   @db.Text
+
+  // ── PAR-Q (Physical Activity Readiness Questionnaire) ───────────────────────
+  // Must be completed — YES to any requires physician clearance
+  parqHeartCondition    Boolean   @default(false) // Heart condition
+  parqChestPainActivity Boolean   @default(false) // Chest pain during activity
+  parqChestPainRest     Boolean   @default(false) // Chest pain at rest
+  parqDizziness         Boolean   @default(false) // Dizziness / loss of balance
+  parqBoneJoint         Boolean   @default(false) // Bone or joint problem
+  parqBloodPressureMeds Boolean   @default(false) // Blood pressure medication
+  parqOtherReason       Boolean   @default(false) // Other reason
+  parqNotes             String?   @db.Text
+  physicianClearance    Boolean   @default(false)
+  physicianName         String?   @db.VarChar(100)
+  physicianPhone        String?   @db.VarChar(20)
+
+  // ── Physical Assessment (completed by instructor) ────────────────────────────
+  fitnessLevel            FitnessLevel?
+  goals                   String?       @db.Text
+  physicalAssessmentNotes String?       @db.Text
+  assessedAt              DateTime?
+  assessedByUserId        String?
+
+  // ── Legal Consents ───────────────────────────────────────────────────────────
+  liabilityWaiverAccepted Boolean @default(false)
+  photoVideoConsent       Boolean @default(false)
+  dataProcessingConsent   Boolean @default(false)
+
+  // ── Profile Completion ───────────────────────────────────────────────────────
+  isComplete  Boolean   @default(false)
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  contract Contract?
+
+  @@index([userId])
+  @@index([isComplete])
+  @@map("client_profiles")
+}
+
+// ─── CONTRACTS ─────────────────────────────────────────────────────────────────
+
+model Contract {
+  id              String @id @default(uuid())
+  clientProfileId String @unique
+  userId          String
+
+  version String @default("1.0") @db.VarChar(10)
+  content String @db.Text // Full legal text snapshotted at signing
+
+  // ── Digital Signature Evidence (for legal validity) ──────────────────────────
+  signedAt      DateTime?
+  signatureData String?   @db.Text        // Typed full name or SVG path
+  ipAddress     String?   @db.VarChar(45) // IPv4 or IPv6
+  userAgent     String?   @db.VarChar(500)
+
+  // ── Stored Signed Copy ───────────────────────────────────────────────────────
+  fileUrl  String?  @db.VarChar(500) // MinIO URL to stored HTML/PDF
+  isSigned Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientProfile ClientProfile @relation(fields: [clientProfileId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isSigned])
+  @@map("contracts")
+}
+

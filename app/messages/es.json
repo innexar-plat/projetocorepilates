@@ -1,0 +1,115 @@
+{
+  "common": {
+    "appName": "Core Pilates",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "tryAgain": "Intentar de nuevo",
+    "backHome": "Volver al inicio",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "learnMore": "Más información",
+    "getStarted": "Empieza ahora"
+  },
+  "nav": {
+    "home": "Inicio",
+    "plans": "Planes",
+    "classes": "Clases",
+    "gallery": "Galería",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "portal": "Mi Portal",
+    "logout": "Cerrar sesión"
+  },
+  "home": {
+    "hero": {
+      "headline": "Transforma tu cuerpo y mente con Pilates",
+      "subheadline": "Únete a Core Pilates y descubre el método más efectivo para tu bienestar",
+      "cta": "Empieza hoy"
+    },
+    "benefits": {
+      "title": "¿Por qué elegir Core Pilates?",
+      "flexibility": "Mejora de la flexibilidad",
+      "strength": "Fuerza y tonificación muscular",
+      "posture": "Corrección postural",
+      "mindfulness": "Mindfulness y concentración"
+    }
+  },
+  "plans": {
+    "title": "Elige tu plan",
+    "subtitle": "Precios transparentes sin sorpresas",
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "perMonth": "/mes",
+    "cta": "Elegir plan",
+    "mostPopular": "Más popular",
+    "starter": {
+      "name": "Starter",
+      "description": "Perfecto para principiantes",
+      "price": "$99"
+    },
+    "essential": {
+      "name": "Essential",
+      "description": "Para practicantes regulares",
+      "price": "$179"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Para atletas dedicados",
+      "price": "$249"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión en tu cuenta",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "registerLink": "Regístrate"
+    },
+    "register": {
+      "title": "Crear tu cuenta",
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Crear cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Inicia sesión"
+    }
+  },
+  "portal": {
+    "welcome": "¡Bienvenido/a, {name}!",
+    "myClasses": "Mis Clases",
+    "mySubscription": "Mi Suscripción",
+    "paymentHistory": "Historial de Pagos",
+    "profile": "Perfil",
+    "bookClass": "Reservar clase",
+    "cancelBooking": "Cancelar reserva",
+    "noClasses": "No tienes clases programadas"
+  },
+  "errors": {
+    "unauthorized": "Debes iniciar sesión para acceder a esta página",
+    "forbidden": "No tienes permiso para acceder a esta página",
+    "notFound": "Página no encontrada",
+    "serverError": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+    "rateLimited": "Demasiadas solicitudes. Espera un momento e inténtalo de nuevo.",
+    "validationFailed": "Verifica los datos ingresados e inténtalo de nuevo"
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "message": "Mensaje",
+    "submit": "Enviar mensaje",
+    "success": "¡Mensaje enviado! Nos pondremos en contacto contigo pronto."
+  }
+}
