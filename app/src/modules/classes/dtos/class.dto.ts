@@ -13,7 +13,16 @@ export const createClassSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const updateClassSchema = createClassSchema.partial();
+export const updateClassSchema = z.object({
+  title: z.string().min(2).max(100).optional(),
+  description: z.string().max(500).optional(),
+  instructor: z.string().min(2).max(100).optional(),
+  maxCapacity: z.number().int().min(1).max(100).optional(),
+  durationMin: z.number().int().min(15).max(240).optional(),
+  dayOfWeek: z.enum(DAYS_OF_WEEK).optional(),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, 'Format must be HH:MM').optional(),
+  isActive: z.boolean().optional(),
+});
 
 export type CreateClassDto = z.infer<typeof createClassSchema>;
 export type UpdateClassDto = z.infer<typeof updateClassSchema>;
