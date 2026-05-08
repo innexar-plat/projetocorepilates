@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { parsePagination } from '@/lib/api';
 import type { CreateLeadDto, UpdateLeadDto, ListLeadsDto } from '../dtos/lead.dto';
-import { LeadStatus } from '@prisma/client';
+import { LeadStatus, Prisma } from '@prisma/client';
 
 export const leadsRepository = {
   findById(id: string) {
@@ -39,10 +39,23 @@ export const leadsRepository = {
   },
 
   create(data: CreateLeadDto) {
-    return db.lead.create({ data: data as any });
+    const createData: Prisma.LeadCreateInput = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      source: data.source,
+      utm: data.utm,
+    };
+
+    return db.lead.create({ data: createData });
   },
 
   update(id: string, data: UpdateLeadDto) {
-    return db.lead.update({ where: { id }, data: data as any });
+    const updateData: Prisma.LeadUpdateInput = {
+      ...(data.status ? { status: data.status as LeadStatus } : {}),
+      ...(data.notes !== undefined ? { notes: data.notes } : {}),
+    };
+
+    return db.lead.update({ where: { id }, data: updateData });
   },
 };

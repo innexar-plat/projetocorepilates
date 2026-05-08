@@ -1,6 +1,8 @@
 import { db } from '@/lib/db';
 import type { ClientProfileDto, PhysicalAssessmentDto } from '../dtos/client-profile.dto';
 
+type ProfileStatusFilter = 'all' | 'incomplete' | 'complete';
+
 export const clientProfilesRepository = {
   findByUserId(userId: string) {
     return db.clientProfile.findUnique({
@@ -47,14 +49,44 @@ export const clientProfilesRepository = {
     });
   },
 
-  // Admin: list profiles needing completion (for follow-up)
-  listIncomplete(skip = 0, take = 20) {
-    return db.clientProfile.findMany({
-      where: { isComplete: false },
-      include: { user: { select: { id: true, name: true, email: true, phone: true } } },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take,
+  async deleteByUserId(userId: string) {
+    const profile = await db.clientProfile.findUnique({
+      where: { userId },
+      select: { id: true },
     });
+
+    if (!profile) {
+      return null;
+    }
+
+    await db.$transaction([
+      db.contract.deleteMany({ where: { clientProfileId: profile.id } }),
+      db.clientProfile.delete({ where: { userId } }),
+    ]);
+
+    return profile;
+  },
+
+  // Admin: list client profiles with optional status filter.
+  async list(skip = 0, take = 20, status: ProfileStatusFilter = 'all') {
+    const where =
+      status === 'incomplete'
+        ? { isComplete: false }
+        : status === 'complete'
+          ? { isComplete: true }
+          : {};
+
+    const [items, total] = await db.$transaction([
+      db.clientProfile.findMany({
+        where,
+        include: { user: { select: { id: true, name: true, email: true, phone: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      db.clientProfile.count({ where }),
+    ]);
+
+    return { items, total };
   },
 };

@@ -8,6 +8,8 @@ import {
   type PhysicalAssessmentDto,
 } from '../dtos/client-profile.dto';
 
+type ProfileStatusFilter = 'all' | 'incomplete' | 'complete';
+
 export const clientProfilesService = {
   async getByUserId(userId: string) {
     const profile = await clientProfilesRepository.findByUserId(userId);
@@ -76,8 +78,14 @@ export const clientProfilesService = {
     );
   },
 
-  async listIncomplete(page = 1, limit = 20) {
+  async list(page = 1, limit = 20, status: ProfileStatusFilter = 'all') {
     const skip = (page - 1) * limit;
-    return clientProfilesRepository.listIncomplete(skip, limit);
+    return clientProfilesRepository.list(skip, limit, status);
+  },
+
+  async removeByUserId(userId: string) {
+    const removed = await clientProfilesRepository.deleteByUserId(userId);
+    if (!removed) throw new NotFoundError('Client profile not found');
+    return removed;
   },
 };

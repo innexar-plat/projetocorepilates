@@ -38,7 +38,11 @@ export const supportService = {
   },
 
   async reply(ticketId: string, userId: string, dto: ReplyTicketDto, isAdmin: boolean) {
-    await supportService.getById(ticketId);
+    if (isAdmin) {
+      await supportService.getById(ticketId);
+    } else {
+      await supportService.getByIdForUser(ticketId, userId);
+    }
     return supportRepository.addMessage({ ticketId, userId, message: dto.message, isAdmin });
   },
 

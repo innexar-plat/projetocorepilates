@@ -36,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const valid = await usersService.verifyPassword(user.id, password);
+        const valid = await usersService.verifyPassword(user.email, password);
         if (!valid) {
           authLogger.warn({ email }, 'Login failed: wrong password');
           return null;

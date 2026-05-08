@@ -17,14 +17,14 @@ export const createLeadSchema = z.object({
 });
 
 export const updateLeadSchema = z.object({
-  status: z.enum(['NEW', 'CONTACTED', 'QUALIFIED', 'CONVERTED', 'LOST']).optional(),
+  status: z.enum(['NEW', 'CONTACTED', 'NEGOTIATING', 'CONVERTED', 'LOST']).optional(),
   notes: z.string().max(2000).optional(),
 });
 
 export const listLeadsSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  status: z.enum(['NEW', 'CONTACTED', 'QUALIFIED', 'CONVERTED', 'LOST']).optional(),
+  status: z.enum(['NEW', 'CONTACTED', 'NEGOTIATING', 'CONVERTED', 'LOST']).optional(),
   search: z.string().max(100).optional(),
 });
 

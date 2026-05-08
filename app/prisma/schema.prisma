@@ -137,8 +137,11 @@ model Plan {
   name            String   @db.VarChar(100)
   description     String?  @db.Text
   price           Decimal  @db.Decimal(15, 2)
-  stripePriceId   String   @unique @db.VarChar(100)
-  stripeProductId String   @unique @db.VarChar(100)
+  isPromotion     Boolean  @default(false)
+  originalPrice   Decimal? @db.Decimal(15, 2)
+  promotionalPrice Decimal? @db.Decimal(15, 2)
+  stripePriceId   String?  @unique @db.VarChar(100)
+  stripeProductId String?  @unique @db.VarChar(100)
   classesPerMonth Int
   isActive        Boolean  @default(true)
   order           Int      @default(0)
@@ -312,6 +315,7 @@ model Post {
 model GalleryImage {
   id        String   @id @default(uuid())
   title     String?  @db.VarChar(100)
+  album     String?  @db.VarChar(80)
   url       String   @db.VarChar(500)
   altText   String?  @db.VarChar(200)
   order     Int      @default(0)
@@ -319,8 +323,23 @@ model GalleryImage {
   createdAt DateTime @default(now())
 
   @@index([isActive])
+  @@index([album])
   @@index([order])
   @@map("gallery_images")
+}
+
+model GalleryAlbum {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(80)
+  description String?  @db.VarChar(200)
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([order])
+  @@map("gallery_albums")
 }
 
 // ─── SUPPORT TICKETS ───────────────────────────────────────────────────────────
@@ -445,6 +464,20 @@ model ClientProfile {
   @@index([userId])
   @@index([isComplete])
   @@map("client_profiles")
+}
+
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────────────
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique @db.VarChar(100)
+  value     String   @db.Text
+  group     String   @default("general") @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([group])
+  @@map("site_settings")
 }
 
 // ─── CONTRACTS ─────────────────────────────────────────────────────────────────

@@ -8,9 +8,11 @@ import { BookingStatus, SubscriptionStatus, ClassSessionStatus } from '@prisma/c
 jest.mock('../repositories/bookings.repository');
 jest.mock('@/lib/db', () => ({
   db: {
+    booking: { create: jest.fn() },
     subscription: { findFirst: jest.fn(), update: jest.fn() },
     classSession: { findUnique: jest.fn() },
     user: { findUnique: jest.fn() },
+    $transaction: jest.fn(),
   },
 }));
 jest.mock('@/lib/resend', () => ({ sendEmail: jest.fn() }));
@@ -69,7 +71,15 @@ const fakeBooking = {
 };
 
 describe('bookingsService', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockDb.$transaction.mockImplementation(async (callback: any) =>
+      callback({
+        booking: { create: mockDb.booking.create },
+        subscription: { update: mockDb.subscription.update },
+      }),
+    );
+  });
 
   // ─── listByUser ───────────────────────────────────────────────────────────
 
@@ -108,7 +118,7 @@ describe('bookingsService', () => {
     });
 
     it('creates a confirmed booking when session has space and user has credits', async () => {
-      mockRepo.create.mockResolvedValue(fakeBooking);
+      mockDb.booking.create.mockResolvedValue(fakeBooking as any);
       mockDb.subscription.update.mockResolvedValue({} as any);
 
       const result = await bookingsService.book({ userId: USER_ID, classSessionId: SESSION_ID });
@@ -157,7 +167,7 @@ describe('bookingsService', () => {
         classesUsedThisMonth: 50,
         plan: { ...fakePlan, classesPerMonth: 999 },
       } as any);
-      mockRepo.create.mockResolvedValue(fakeBooking);
+      mockDb.booking.create.mockResolvedValue(fakeBooking as any);
 
       await bookingsService.book({ userId: USER_ID, classSessionId: SESSION_ID });
       expect(mockDb.subscription.update).not.toHaveBeenCalled();

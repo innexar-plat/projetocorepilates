@@ -6,7 +6,7 @@ import { UserRole } from '@prisma/client';
 import { z } from 'zod';
 
 const generateSchema = z.object({
-  classId: z.string().uuid(),
+  classId: z.string().min(1),
   fromDate: z.string().date('Must be YYYY-MM-DD'),
   toDate: z.string().date('Must be YYYY-MM-DD'),
 });

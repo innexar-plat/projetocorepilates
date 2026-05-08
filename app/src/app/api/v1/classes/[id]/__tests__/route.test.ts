@@ -2,6 +2,10 @@ import { GET } from '../route';
 import { classesService } from '@/modules/classes/services/classes.service';
 import { NotFoundError } from '@/lib/errors';
 
+jest.mock('@/lib/auth', () => ({
+  auth: jest.fn(),
+}));
+
 jest.mock('@/modules/classes/services/classes.service', () => ({
   classesService: {
     getById: jest.fn(),

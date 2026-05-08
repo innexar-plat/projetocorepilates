@@ -6,8 +6,19 @@ import { apiSuccess, apiCreated, apiError } from '@/lib/api';
 import { UserRole } from '@prisma/client';
 
 // GET /api/v1/plans — public
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const includeAll = req.nextUrl.searchParams.get('all') === 'true';
+    if (includeAll) {
+      const session = await auth();
+      if (!session || session.user.role !== UserRole.ADMIN) {
+        return apiError(new Error('Forbidden'), 403);
+      }
+
+      const plans = await plansService.listAll(false);
+      return apiSuccess({ data: plans });
+    }
+
     const plans = await plansService.listAll(true);
     return apiSuccess({ data: plans });
   } catch (err) {

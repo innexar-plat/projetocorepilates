@@ -62,21 +62,25 @@ export const bookingsService = {
       return bookingsRepository.create({ userId, classSessionId, status: BookingStatus.WAITLIST });
     }
 
-    // Confirm booking and deduct class credit
-    const booking = await bookingsRepository.create({
-      userId,
-      classSessionId,
-      status: BookingStatus.CONFIRMED,
-    });
-
-    if (!unlimited) {
-      await db.subscription.update({
-        where: { id: subscription.id },
-        data: { classesUsedThisMonth: { increment: 1 } },
+    // Confirm booking and deduct class credit atomically.
+    return db.$transaction(async (tx) => {
+      const booking = await tx.booking.create({
+        data: {
+          userId,
+          classSessionId,
+          status: BookingStatus.CONFIRMED,
+        },
       });
-    }
 
-    return booking;
+      if (!unlimited) {
+        await tx.subscription.update({
+          where: { id: subscription.id },
+          data: { classesUsedThisMonth: { increment: 1 } },
+        });
+      }
+
+      return booking;
+    });
   },
 
   async cancel(bookingId: string, requestingUserId: string) {
@@ -120,8 +124,8 @@ export const bookingsService = {
         if (promotedUser) {
           await sendEmail({
             to: promotedUser.email,
-            subject: 'Boa notícia! Sua vaga foi confirmada',
-            html: `<p>Olá ${promotedUser.name}, sua reserva na lista de espera foi confirmada!</p>`,
+            subject: 'Great news! Your spot has been confirmed',
+            html: `<p>Hello ${promotedUser.name}, your waitlisted booking has been confirmed!</p>`,
           });
         }
       }

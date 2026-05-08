@@ -1,6 +1,10 @@
 import { GET } from '../route';
 import { classesService } from '@/modules/classes/services/classes.service';
 
+jest.mock('@/lib/auth', () => ({
+  auth: jest.fn(),
+}));
+
 jest.mock('@/modules/classes/services/classes.service', () => ({
   classesService: {
     listAll: jest.fn(),

@@ -72,6 +72,25 @@ describe('PATCH /api/v1/plans/[id]', () => {
     expect(body.data).toEqual({ data: { id: 'plan-1', name: 'Updated Plan' } });
     expect(updateMock).toHaveBeenCalledWith('plan-1', { name: 'Updated Plan' });
   });
+
+  it('returns 400 when promotion fields are sent with isPromotion=false', async () => {
+    authMock.mockResolvedValue({ user: { role: 'ADMIN' } });
+
+    const req = new Request('http://localhost/api/v1/plans/plan-1', {
+      method: 'PATCH',
+      body: JSON.stringify({
+        isPromotion: false,
+        promotionalPrice: 199.99,
+      }),
+    });
+
+    const res = await PATCH(req as any, { params: Promise.resolve({ id: 'plan-1' }) } as any);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.error).toBe('Bad Request');
+    expect(updateMock).not.toHaveBeenCalled();
+  });
 });
 
 describe('DELETE /api/v1/plans/[id]', () => {

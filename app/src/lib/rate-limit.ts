@@ -54,3 +54,9 @@ export function checkPublicRateLimit(ip: string): boolean {
 export function checkLoginRateLimit(ip: string): boolean {
   return rateLimit(`login:${ip}`, 10, 15 * 60_000);
 }
+
+/** Convenience: 3 forgot-password requests per hour per normalized email */
+export function checkForgotPasswordRateLimit(email: string): boolean {
+  const normalizedEmail = email.trim().toLowerCase();
+  return rateLimit(`forgot-password:${normalizedEmail}`, 3, 60 * 60_000);
+}

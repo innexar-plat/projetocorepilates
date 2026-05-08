@@ -4,6 +4,7 @@ import { leadsService } from '@/modules/leads/services/leads.service';
 import { createLeadSchema } from '@/modules/leads/dtos/lead.dto';
 import { apiCreated, apiPaginated, apiError } from '@/lib/api';
 import { checkPublicRateLimit } from '@/lib/rate-limit';
+import { UserRole } from '@prisma/client';
 
 // POST /api/v1/leads — public endpoint for contact form / landing page capture
 export async function POST(req: NextRequest) {
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || session.user.role !== UserRole.ADMIN) {
       return apiError(new Error('Forbidden'), 403);
     }
 

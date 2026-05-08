@@ -70,7 +70,7 @@ describe('POST /api/v1/bookings', () => {
 
     const req = new Request('http://localhost/api/v1/bookings', {
       method: 'POST',
-      body: JSON.stringify({ classSessionId: 'not-a-uuid' }),
+      body: JSON.stringify({ classSessionId: '' }),
     });
 
     const res = await POST(req as any);

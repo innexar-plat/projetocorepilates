@@ -1,6 +1,7 @@
 import { GET, POST } from '../route';
 import { auth } from '@/lib/auth';
 import { plansService } from '@/modules/plans/services/plans.service';
+import { NextRequest } from 'next/server';
 
 jest.mock('@/lib/auth', () => ({
   auth: jest.fn(),
@@ -25,7 +26,8 @@ describe('GET /api/v1/plans', () => {
   it('returns active plans publicly', async () => {
     listAllMock.mockResolvedValue([{ id: 'plan-1' }]);
 
-    const res = await GET();
+    const req = new NextRequest('http://localhost/api/v1/plans');
+    const res = await GET(req as any);
     const body = await res.json();
 
     expect(res.status).toBe(200);
@@ -67,6 +69,45 @@ describe('POST /api/v1/plans', () => {
 
     expect(res.status).toBe(400);
     expect(body.error).toBe('Bad Request');
+  });
+
+  it('returns 400 when promotion fields are sent without isPromotion=true', async () => {
+    authMock.mockResolvedValue({ user: { role: 'ADMIN' } });
+
+    const req = new Request('http://localhost/api/v1/plans', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'Premium',
+        price: 299.99,
+        classesPerMonth: 8,
+        originalPrice: 399.99,
+        promotionalPrice: 299.99,
+      }),
+    });
+
+    const res = await POST(req as any);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.error).toBe('Bad Request');
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for malformed JSON body', async () => {
+    authMock.mockResolvedValue({ user: { role: 'ADMIN' } });
+
+    const req = new Request('http://localhost/api/v1/plans', {
+      method: 'POST',
+      body: '{"name": "broken"',
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const res = await POST(req as any);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.error).toBe('Bad Request');
+    expect(body.message).toBe('Invalid JSON body');
   });
 
   it('creates plan and returns 201 for admin', async () => {

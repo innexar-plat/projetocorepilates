@@ -1,51 +1,49 @@
-import { useTranslations } from 'next-intl';
+import { SiteNav } from '@/components/layout/SiteNav';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { HeroSection } from '@/components/sections/HeroSection';
+import { WebsiteHomeContent } from '@/components/sections/WebsiteHomeContent';
+import { auth } from '@/lib/auth';
+import type { Metadata } from 'next';
+import type { Locale } from '@/i18n/routing';
 
-export default function HomePage() {
-  const t = useTranslations('home');
-  const tPlans = useTranslations('plans');
-  const tNav = useTranslations('nav');
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const isEn = locale === 'en';
+  const isPt = locale === 'pt';
+  const title = isEn
+    ? 'Core Pilates Miami — Transform Your Body & Mind'
+    : isPt
+      ? 'Core Pilates Miami — Transforme Seu Corpo e Mente'
+      : 'Core Pilates Miami — Transforma Tu Cuerpo y Mente';
+  const description = isEn
+    ? 'Premium Pilates studio in Miami. Reformer & mat classes, certified instructors. Start your trial today.'
+    : isPt
+      ? 'Estúdio de Pilates premium em Miami. Aulas de reformer e mat. Comece sua aula experimental hoje.'
+      : 'Estudio de Pilates premium en Miami. Clases de reformer y mat. Empieza tu clase de prueba hoy.';
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://corepilates.com/${locale}`,
+      languages: { en: '/en', pt: '/pt', es: '/es' },
+    },
+    openGraph: { title, description, url: `https://corepilates.com/${locale}` },
+  };
+}
+
+export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
-      <section className="text-center max-w-2xl">
-        <h1 className="text-4xl font-bold mb-4">{t('hero.headline')}</h1>
-        <p className="text-lg text-gray-600 mb-8">{t('hero.subheadline')}</p>
-        <a
-          href="#plans"
-          className="inline-block bg-black text-white px-8 py-3 rounded-full hover:bg-gray-800 transition-colors"
-        >
-          {t('hero.cta')}
-        </a>
-      </section>
-
-      <section id="plans" className="mt-24 w-full max-w-5xl">
-        <h2 className="text-3xl font-bold text-center mb-4">{tPlans('title')}</h2>
-        <p className="text-center text-gray-500 mb-12">{tPlans('subtitle')}</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {(['starter', 'essential', 'premium'] as const).map((plan) => (
-            <div
-              key={plan}
-              className="border rounded-2xl p-8 flex flex-col items-center shadow-sm hover:shadow-md transition-shadow"
-            >
-              <h3 className="text-xl font-semibold mb-2">{tPlans(`${plan}.name` as any)}</h3>
-              <p className="text-gray-500 text-sm mb-4">{tPlans(`${plan}.description` as any)}</p>
-              <p className="text-3xl font-bold mb-6">
-                {tPlans(`${plan}.price` as any)}
-                <span className="text-base font-normal text-gray-500">
-                  {tPlans('perMonth')}
-                </span>
-              </p>
-              <a
-                href={`/${tNav('register')}`}
-                className="w-full text-center bg-black text-white py-2 rounded-full hover:bg-gray-800 transition-colors"
-              >
-                {tPlans('cta')}
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
+    <>
+      <SiteNav locale={locale} isAdmin={isAdmin} />
+      <main>
+        <HeroSection locale={locale} />
+        <WebsiteHomeContent />
+      </main>
+      <SiteFooter locale={locale} />
+    </>
   );
 }

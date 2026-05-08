@@ -23,11 +23,13 @@ describe('GET /api/v1/sessions', () => {
 
     expect(res.status).toBe(200);
     expect(listUpcomingMock).toHaveBeenCalledWith(undefined, 30);
-    expect(body.data).toEqual({ data: [{ id: 'session-1' }] });
+    expect(body.data).toEqual({
+      data: [{ id: 'session-1', bookedCount: 0, availableSlots: 0, isAvailable: false }],
+    });
   });
 
-  it('returns 400 when classId query is invalid', async () => {
-    const req = { nextUrl: new URL('http://localhost/api/v1/sessions?classId=invalid') };
+  it('returns 400 when classId query is empty', async () => {
+    const req = { nextUrl: new URL('http://localhost/api/v1/sessions?classId=') };
     const res = await GET(req as any);
     const body = await res.json();
 
@@ -41,14 +43,16 @@ describe('GET /api/v1/sessions', () => {
 
     const req = {
       nextUrl: new URL(
-        'http://localhost/api/v1/sessions?classId=11111111-1111-4111-8111-111111111111&limit=5',
+        'http://localhost/api/v1/sessions?classId=seed-brazilian-flow-pilates-monday-06-00&limit=5',
       ),
     };
     const res = await GET(req as any);
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(listUpcomingMock).toHaveBeenCalledWith('11111111-1111-4111-8111-111111111111', 5);
-    expect(body.data).toEqual({ data: [{ id: 'session-2' }] });
+    expect(listUpcomingMock).toHaveBeenCalledWith('seed-brazilian-flow-pilates-monday-06-00', 5);
+    expect(body.data).toEqual({
+      data: [{ id: 'session-2', bookedCount: 0, availableSlots: 0, isAvailable: false }],
+    });
   });
 });

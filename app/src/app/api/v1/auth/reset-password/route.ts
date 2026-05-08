@@ -5,7 +5,10 @@ import { checkPublicRateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
 
 const resetSchema = z.object({
-  token: z.string().min(1),
+  token: z
+    .string()
+    .length(64, 'Invalid reset token')
+    .regex(/^[a-f0-9]{64}$/, 'Invalid reset token format'),
   newPassword: z
     .string()
     .min(8, 'Password must be at least 8 characters')

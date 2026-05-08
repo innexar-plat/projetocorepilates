@@ -1,18 +1,51 @@
 import * as Minio from 'minio';
 import { storageLogger } from '@/lib/logger';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'] as const;
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const MINIO_BUCKET = process.env.MINIO_BUCKET ?? 'core-pilates-media';
+let ensureBucketPromise: Promise<void> | null = null;
+
+const INTERNAL_MINIO_USE_SSL = process.env.MINIO_USE_SSL === 'true';
+
+function getPublicMinioBaseUrl(): string {
+  const useSSL =
+    (process.env.MINIO_PUBLIC_USE_SSL ?? process.env.MINIO_USE_SSL ?? 'false') === 'true';
+  const protocol = useSSL ? 'https' : 'http';
+  const host =
+    process.env.MINIO_PUBLIC_ENDPOINT ??
+    process.env.MINIO_ENDPOINT ??
+    'localhost';
+  const port = process.env.MINIO_PUBLIC_PORT ?? process.env.MINIO_PORT ?? '9000';
+  return `${protocol}://${host}:${port}`;
+}
 
 export const minio = new Minio.Client({
   endPoint: process.env.MINIO_ENDPOINT ?? 'localhost',
   port: parseInt(process.env.MINIO_PORT ?? '9000', 10),
-  useSSL: process.env.MINIO_USE_SSL === 'true',
+  useSSL: INTERNAL_MINIO_USE_SSL,
   accessKey: process.env.MINIO_ACCESS_KEY ?? '',
   secretKey: process.env.MINIO_SECRET_KEY ?? '',
 });
+
+async function ensureBucketExists(): Promise<void> {
+  if (!ensureBucketPromise) {
+    ensureBucketPromise = (async () => {
+      const exists = await minio.bucketExists(MINIO_BUCKET);
+      if (!exists) {
+        await minio.makeBucket(MINIO_BUCKET);
+        storageLogger.warn({ bucket: MINIO_BUCKET }, 'MinIO bucket created automatically');
+      }
+    })().catch((error) => {
+      // Allow retry on next upload attempt if bucket check/create fails.
+      ensureBucketPromise = null;
+      throw error;
+    });
+  }
+
+  await ensureBucketPromise;
+}
 
 export interface UploadResult {
   url: string;
@@ -35,14 +68,13 @@ export async function uploadImage(
   const ext = mimeType.split('/')[1];
   const filename = `${folder}/${crypto.randomUUID()}.${ext}`;
 
+  await ensureBucketExists();
+
   await minio.putObject(MINIO_BUCKET, filename, file, sizeBytes, {
     'Content-Type': mimeType,
   });
 
-  const protocol = process.env.MINIO_USE_SSL === 'true' ? 'https' : 'http';
-  const host = process.env.MINIO_ENDPOINT ?? 'localhost';
-  const port = process.env.MINIO_PORT ?? '9000';
-  const url = `${protocol}://${host}:${port}/${MINIO_BUCKET}/${filename}`;
+  const url = `${getPublicMinioBaseUrl()}/${MINIO_BUCKET}/${filename}`;
 
   storageLogger.info({ filename, folder, sizeBytes }, 'File uploaded');
   return { url, filename };
@@ -65,14 +97,13 @@ export async function uploadFile(
 ): Promise<UploadResult> {
   const objectName = `${folder}/${filename}`;
 
+  await ensureBucketExists();
+
   await minio.putObject(MINIO_BUCKET, objectName, buffer, buffer.length, {
     'Content-Type': contentType,
   });
 
-  const protocol = process.env.MINIO_USE_SSL === 'true' ? 'https' : 'http';
-  const host = process.env.MINIO_ENDPOINT ?? 'localhost';
-  const port = process.env.MINIO_PORT ?? '9000';
-  const url = `${protocol}://${host}:${port}/${MINIO_BUCKET}/${objectName}`;
+  const url = `${getPublicMinioBaseUrl()}/${MINIO_BUCKET}/${objectName}`;
 
   storageLogger.info({ filename: objectName, folder, sizeBytes: buffer.length }, 'File uploaded');
   return { url, filename: objectName };

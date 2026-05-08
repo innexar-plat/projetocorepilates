@@ -4,11 +4,16 @@ import { plansService } from '@/modules/plans/services/plans.service';
 import { usersRepository } from '@/modules/users/repositories/users.repository';
 import { stripe, stripeCall } from '@/lib/stripe';
 import { db } from '@/lib/db';
-import { apiSuccess, apiError } from '@/lib/api';
+import { apiSuccess, apiError, apiClientError } from '@/lib/api';
 import { z } from 'zod';
+import { BookingStatus, ClassSessionStatus } from '@prisma/client';
+
+const STRIPE_PRICE_ID_REGEX = /^price_[A-Za-z0-9]+$/;
 
 const checkoutSchema = z.object({
-  planId: z.string().uuid(),
+  // Accept UUID and seeded string identifiers (e.g. seed-essential, seed-session-...)
+  planId: z.string().trim().min(1).max(120),
+  classSessionId: z.string().trim().min(1).max(160),
   successUrl: z.string().url().optional(),
   cancelUrl: z.string().url().optional(),
 });
@@ -29,13 +34,65 @@ export async function POST(req: NextRequest) {
     if (!session) return apiError(new Error('Unauthorized'), 401);
 
     const body = await req.json();
-    const { planId, successUrl, cancelUrl } = checkoutSchema.parse(body);
+    const { planId, classSessionId, successUrl, cancelUrl } = checkoutSchema.parse(body);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const plan = await plansService.getActiveById(planId);
+    let plan = await plansService.getActiveById(planId);
+    if (!plan.stripePriceId || !STRIPE_PRICE_ID_REGEX.test(plan.stripePriceId)) {
+      await plansService.syncActivePlansWithStripe();
+      plan = await plansService.getActiveById(planId);
+
+      if (!plan.stripePriceId || !STRIPE_PRICE_ID_REGEX.test(plan.stripePriceId)) {
+        return apiClientError(
+          503,
+          'Service Unavailable',
+          'Selected plan is not connected to a real Stripe price yet.',
+        );
+      }
+    }
+
     const user = await usersRepository.findById(session.user.id);
     if (!user) return apiError(new Error('User not found'), 404);
 
+    const classSession = await db.classSession.findUnique({
+      where: { id: classSessionId },
+      include: {
+        class: {
+          select: {
+            id: true,
+            maxCapacity: true,
+            isActive: true,
+          },
+        },
+      },
+    });
+
+    if (!classSession || !classSession.class?.isActive || classSession.status !== ClassSessionStatus.SCHEDULED || classSession.date < today) {
+      return apiError(new Error('Selected class session is not available'), 400);
+    }
+
+    const confirmedBookings = await db.booking.count({
+      where: {
+        classSessionId,
+        status: BookingStatus.CONFIRMED,
+      },
+    });
+
+    if (confirmedBookings >= classSession.class.maxCapacity) {
+      return apiError(new Error('Selected class session is full'), 409);
+    }
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://braziliancorepilates.com';
+
+    const stripeSecret = process.env.STRIPE_SECRET_KEY ?? '';
+    if (!stripeSecret || stripeSecret.includes('placeholder') || !stripeSecret.startsWith('sk_')) {
+      return apiClientError(
+        503,
+        'Service Unavailable',
+        'Stripe is not configured. Set STRIPE_SECRET_KEY with a valid key.',
+      );
+    }
 
     // Ensure the user has a Stripe customer ID
     let stripeCustomerId = user.stripeCustomerId;
@@ -56,12 +113,12 @@ export async function POST(req: NextRequest) {
         mode: 'subscription',
         customer: stripeCustomerId!,
         line_items: [{ price: plan.stripePriceId, quantity: 1 }],
-        success_url: successUrl ?? `${appUrl}/portal?checkout=success`,
+        success_url: successUrl ?? `${appUrl}/checkout/processando?checkout=success`,
         cancel_url: cancelUrl ?? `${appUrl}/planos`,
         client_reference_id: session.user.id,
-        metadata: { userId: session.user.id, planId },
+        metadata: { userId: session.user.id, planId, classSessionId },
         subscription_data: {
-          metadata: { userId: session.user.id, planId },
+          metadata: { userId: session.user.id, planId, classSessionId },
         },
         allow_promotion_codes: true,
       }),

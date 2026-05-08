@@ -109,22 +109,47 @@ describe('clientProfilesRepository', () => {
     });
   });
 
-  // ── listIncomplete ────────────────────────────────────────────────────────────
-  describe('listIncomplete', () => {
-    it('queries for incomplete profiles with default pagination', async () => {
-      mockDb.clientProfile.findMany.mockResolvedValue([baseProfile]);
-      const result = await clientProfilesRepository.listIncomplete();
+  // ── list ─────────────────────────────────────────────────────────────────────
+  describe('list', () => {
+    it('queries for all profiles by default and returns items + total', async () => {
+      mockDb.$transaction.mockResolvedValue([[baseProfile], 1] as never);
+      const result = await clientProfilesRepository.list();
+
+      expect(mockDb.$transaction).toHaveBeenCalled();
+      expect(result).toEqual({ items: [baseProfile], total: 1 });
+    });
+
+    it('queries for incomplete profiles when status is incomplete', async () => {
+      mockDb.$transaction.mockResolvedValue([[baseProfile], 1] as never);
+
+      await clientProfilesRepository.list(0, 20, 'incomplete');
+
       expect(mockDb.clientProfile.findMany).toHaveBeenCalledWith(
         expect.objectContaining({ where: { isComplete: false } }),
       );
-      expect(result).toEqual([baseProfile]);
+      expect(mockDb.clientProfile.count).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { isComplete: false } }),
+      );
+    });
+
+    it('queries for complete profiles when status is complete', async () => {
+      mockDb.$transaction.mockResolvedValue([[], 0] as never);
+
+      await clientProfilesRepository.list(0, 20, 'complete');
+
+      expect(mockDb.clientProfile.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { isComplete: true } }),
+      );
+      expect(mockDb.clientProfile.count).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { isComplete: true } }),
+      );
     });
 
     it('applies custom skip and take', async () => {
-      mockDb.clientProfile.findMany.mockResolvedValue([]);
-      await clientProfilesRepository.listIncomplete(10, 5);
+      mockDb.$transaction.mockResolvedValue([[], 0] as never);
+      await clientProfilesRepository.list(10, 5, 'all');
       expect(mockDb.clientProfile.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({ skip: 10, take: 5 }),
+        expect.objectContaining({ where: {}, skip: 10, take: 5 }),
       );
     });
   });

@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = req.nextUrl;
     const parsed = listPaymentsSchema.safeParse({
-      page: searchParams.get('page'),
-      limit: searchParams.get('limit'),
+      page: searchParams.get('page') ?? undefined,
+      limit: searchParams.get('limit') ?? undefined,
     });
 
     if (!parsed.success) {

@@ -49,6 +49,20 @@ const stripeCheckoutCreateMock = stripe.checkout.sessions.create as jest.Mock;
 const stripeSubscriptionUpdateMock = stripe.subscriptions.update as jest.Mock;
 
 describe('Critical API flows integration', () => {
+  const originalStripeSecret = process.env.STRIPE_SECRET_KEY;
+
+  beforeAll(() => {
+    process.env.STRIPE_SECRET_KEY = 'sk_test_123456789';
+  });
+
+  afterAll(() => {
+    if (originalStripeSecret === undefined) {
+      delete process.env.STRIPE_SECRET_KEY;
+      return;
+    }
+    process.env.STRIPE_SECRET_KEY = originalStripeSecret;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     rateLimitMock.mockReturnValue(true);
@@ -159,6 +173,7 @@ describe('Critical API flows integration', () => {
   it('creates checkout session for active plan using real plan and user repositories', async () => {
     const userId = '77777777-7777-4777-8777-777777777777';
     const planId = '88888888-8888-4888-8888-888888888888';
+    const classSessionId = '99999999-9999-4999-8999-999999999999';
 
     authMock.mockResolvedValue({ user: { id: userId } });
 
@@ -201,6 +216,17 @@ describe('Critical API flows integration', () => {
       updatedAt: new Date('2026-03-28T00:00:00.000Z'),
       deletedAt: null,
     });
+    (db.classSession.findUnique as jest.Mock).mockResolvedValueOnce({
+      id: classSessionId,
+      date: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      status: 'SCHEDULED',
+      class: {
+        id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+        maxCapacity: 10,
+        isActive: true,
+      },
+    });
+    (db.booking.count as jest.Mock).mockResolvedValueOnce(1);
 
     stripeCustomerCreateMock.mockResolvedValue({ id: 'cus_123' });
     stripeCheckoutCreateMock.mockResolvedValue({
@@ -210,7 +236,7 @@ describe('Critical API flows integration', () => {
 
     const req = new Request('http://localhost/api/v1/subscriptions/checkout', {
       method: 'POST',
-      body: JSON.stringify({ planId }),
+      body: JSON.stringify({ planId, classSessionId }),
     });
 
     const res = await checkoutPOST(req as any);

@@ -9,15 +9,19 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "test": "jest --passWithNoTests",
-    "test:ci": "jest --coverage --coverageReporters=text-summary",
+    "test:ci": "jest src/modules --coverage --coverageReporters=text-summary",
     "test:integration": "jest src/integration --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest src/modules --coverage",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
+    "db:push": "prisma db push && prisma generate",
     "db:studio": "prisma studio",
-    "db:seed": "ts-node --project tsconfig.json -e 'require(\"./prisma/seed\")'"
+    "db:seed": "ts-node --esm prisma/seed.ts",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --events customer.subscription.created,customer.subscription.updated,customer.subscription.deleted,invoice.paid,invoice.payment_failed,checkout.session.completed",
+    "stripe:listen:print-secret": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --events customer.subscription.created,customer.subscription.updated,customer.subscription.deleted,invoice.paid,invoice.payment_failed,checkout.session.completed --print-secret",
+    "stripe:trigger:checkout": "stripe trigger checkout.session.completed",
+    "stripe:trigger:invoice-paid": "stripe trigger invoice.paid"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -36,6 +40,7 @@
     "pino": "^10.3.1",
     "pino-pretty": "^13.1.3",
     "prisma": "^7.6.0",
+    "qrcode.react": "^4.2.0",
     "react": "^18",
     "react-dom": "^18",
     "react-email": "^5.2.10",
@@ -54,6 +59,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/pino": "^7.0.4",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
@@ -63,6 +69,7 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

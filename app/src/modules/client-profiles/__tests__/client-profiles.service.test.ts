@@ -261,23 +261,23 @@ describe('clientProfilesService', () => {
     });
   });
 
-  // ── listIncomplete ─────────────────────────────────────────────────────────
+  // ── list ───────────────────────────────────────────────────────────────────
 
-  describe('listIncomplete', () => {
+  describe('list', () => {
     it('uses default pagination values when no args are passed', async () => {
-      repoMock.listIncomplete.mockResolvedValue([] as never);
+      repoMock.list.mockResolvedValue({ items: [], total: 0 } as never);
 
-      await clientProfilesService.listIncomplete();
+      await clientProfilesService.list();
 
-      expect(repoMock.listIncomplete).toHaveBeenCalledWith(0, 20);
+      expect(repoMock.list).toHaveBeenCalledWith(0, 20, 'all');
     });
 
     it('delegates pagination to repository', async () => {
-      repoMock.listIncomplete.mockResolvedValue([] as never);
+      repoMock.list.mockResolvedValue({ items: [], total: 0 } as never);
 
-      await clientProfilesService.listIncomplete(2, 10);
+      await clientProfilesService.list(2, 10, 'incomplete');
 
-      expect(repoMock.listIncomplete).toHaveBeenCalledWith(10, 10); // skip = (2-1)*10 = 10
+      expect(repoMock.list).toHaveBeenCalledWith(10, 10, 'incomplete'); // skip = (2-1)*10 = 10
     });
   });
 });

@@ -4,14 +4,14 @@ import { apiSuccess, apiError } from '@/lib/api';
 import { z } from 'zod';
 
 const querySchema = z.object({
-  classId: z.string().uuid().optional(),
+  classId: z.string().min(1).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(30),
 });
 
 /**
  * GET /api/v1/sessions
  * Public — lists upcoming scheduled class sessions.
- * Query: ?classId=uuid&limit=30
+ * Query: ?classId=<class-id>&limit=30
  */
 export async function GET(req: NextRequest) {
   try {
@@ -22,7 +22,20 @@ export async function GET(req: NextRequest) {
     });
 
     const sessions = await classSessionsService.listUpcoming(classId, limit);
-    return apiSuccess({ data: sessions });
+    const sessionsWithAvailability = sessions.map((session) => {
+      const bookedCount = session._count?.bookings ?? 0;
+      const maxCapacity = session.class?.maxCapacity ?? 0;
+      const availableSlots = Math.max(maxCapacity - bookedCount, 0);
+
+      return {
+        ...session,
+        bookedCount,
+        availableSlots,
+        isAvailable: availableSlots > 0,
+      };
+    });
+
+    return apiSuccess({ data: sessionsWithAvailability });
   } catch (err) {
     return apiError(err);
   }

@@ -92,6 +92,27 @@ export function apiError(error: unknown, forceStatus?: number): NextResponse {
     );
   }
 
+  const isSyntaxError =
+    error instanceof SyntaxError ||
+    (typeof error === 'object' &&
+      error !== null &&
+      'name' in error &&
+      (error as { name?: unknown }).name === 'SyntaxError');
+
+  if (isSyntaxError) {
+    incrementMetric('api.errors.400');
+    logger.warn({ requestId, message: error.message }, 'Malformed JSON payload');
+    return NextResponse.json(
+      {
+        requestId,
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Invalid JSON body',
+      },
+      { status: 400 },
+    );
+  }
+
   if (forceStatus !== undefined) {
     incrementMetric(`api.errors.${forceStatus}`);
     const isServer = forceStatus >= 500;

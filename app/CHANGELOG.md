@@ -4,6 +4,12 @@
 
 ### Added
 
+- Reusable frontend architecture with shared `components`, `hooks`, `services`, and `utils` layers.
+- Localized website routes connected to real backend APIs: `/[locale]`, `/[locale]/planos`, `/[locale]/aulas`, `/[locale]/contato`.
+- Localized portal routes connected to authenticated APIs: `/[locale]/portal/dashboard`, `/[locale]/portal/aulas`, `/[locale]/portal/pagamentos`.
+- Localized admin routes connected to protected APIs: `/[locale]/admin/dashboard`, `/[locale]/admin/users`.
+- Shared frontend HTTP client with API envelope unwrapping for standardized backend contracts.
+- Service tests for frontend HTTP client and website service integration layer.
 - In-memory idempotency guard for Stripe webhook event IDs.
 - Runtime metrics utility for API and webhook counters.
 - Tests for API force-status error consistency.

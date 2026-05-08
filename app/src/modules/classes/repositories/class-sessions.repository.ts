@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { db } from '@/lib/db';
-import { ClassSessionStatus } from '@prisma/client';
+import { BookingStatus, ClassSessionStatus } from '@prisma/client';
 
 export const createSessionSchema = z.object({
-  classId: z.string().uuid(),
+  classId: z.string().min(1),
   date: z.string().date('Date must be YYYY-MM-DD'),
   notes: z.string().max(500).optional(),
 });
@@ -22,9 +22,12 @@ export const classSessionsRepository = {
    * Includes class name, capacity info, and booking count.
    */
   async listUpcoming(classId?: string, limit = 30) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     return db.classSession.findMany({
       where: {
-        date: { gte: new Date() },
+        date: { gte: today },
         status: ClassSessionStatus.SCHEDULED,
         ...(classId ? { classId } : {}),
       },
@@ -32,9 +35,15 @@ export const classSessionsRepository = {
         class: {
           select: { id: true, title: true, instructor: true, maxCapacity: true, durationMin: true, startTime: true },
         },
-        _count: { select: { bookings: true } },
+        _count: {
+          select: {
+            bookings: {
+              where: { status: BookingStatus.CONFIRMED },
+            },
+          },
+        },
       },
-      orderBy: { date: 'asc' },
+      orderBy: [{ date: 'asc' }, { class: { startTime: 'asc' } }],
       take: limit,
     });
   },
@@ -44,7 +53,13 @@ export const classSessionsRepository = {
       where: { id },
       include: {
         class: { select: { id: true, title: true, instructor: true, maxCapacity: true, durationMin: true, startTime: true } },
-        _count: { select: { bookings: true } },
+        _count: {
+          select: {
+            bookings: {
+              where: { status: BookingStatus.CONFIRMED },
+            },
+          },
+        },
       },
     });
   },

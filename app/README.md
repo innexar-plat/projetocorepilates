@@ -2,6 +2,12 @@
 
 Backend API for subscriptions, bookings, classes, client onboarding, contracts, payments, referrals, and support.
 
+This app now includes reusable frontend surfaces for:
+
+- Website (`/[locale]`, `/[locale]/planos`, `/[locale]/aulas`, `/[locale]/contato`)
+- Client portal (`/[locale]/portal/*`)
+- Admin panel (`/[locale]/admin/*`)
+
 ## Requirements
 
 - Node.js >= 20
@@ -80,6 +86,10 @@ docker compose down -v
 ```text
 src/
 	app/api/                    # Next.js route handlers
+	app/[locale]/               # Localized frontend routes
+	components/                 # Reusable atoms/molecules/organisms/layout/sections
+	hooks/                      # Shared frontend hooks
+	services/                   # Frontend API clients (real backend connection)
 	modules/
 		users/
 		subscriptions/
@@ -99,7 +109,29 @@ src/
 		idempotency.ts            # In-memory idempotency guard
 	test/
 		__mocks__/db.ts           # Global Prisma mock for tests
+	utils/
+		cn.ts                     # Shared utility for class composition
 ```
+
+## Frontend Organization
+
+Reusable UI and data flow follows:
+
+```
+Page -> Section Component -> Hook -> Service -> /api/v1 endpoint
+```
+
+Main frontend services:
+
+- `src/services/website.service.ts`
+- `src/services/portal.service.ts`
+- `src/services/admin.service.ts`
+- `src/services/auth.service.ts`
+
+Main frontend shells:
+
+- `src/components/layout/SiteHeader.tsx`
+- `src/components/layout/AppShell.tsx`
 
 ## API Error Contract
 
@@ -137,6 +169,67 @@ See detailed guides:
 npx tsc --noEmit
 npx jest --coverage --coverageReporters="text-summary"
 ```
+
+## Gallery Upload (Admin + MinIO)
+
+The admin gallery now supports:
+
+- Single image upload
+- Bulk image upload (multiple files in one request)
+- Automatic MinIO storage with DB record creation
+
+Endpoint:
+
+- `POST /api/v1/admin/gallery/upload`
+
+Request format:
+
+- `Content-Type: multipart/form-data`
+- `files`: one or many image files (`image/jpeg`, `image/png`, `image/webp`)
+- Optional metadata:
+- `title`: base title used for uploaded images
+- `altText`: shared alt text
+- `order`: base order (incremented automatically for batch uploads)
+- `isActive`: `true` or `false`
+
+Response format:
+
+- `201 Created`
+- `data.created`: images successfully uploaded and persisted
+- `data.failed`: files rejected with reason (partial success supported)
+
+## Stripe Webhook Local Setup
+
+1. Keep the app running locally on `http://localhost:3000`.
+2. In another terminal, run:
+
+```bash
+npm run stripe:listen:print-secret
+```
+
+3. Copy the `whsec_...` output and set it in [app/.env](.env):
+
+```env
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+```
+
+4. Restart the app after updating env values.
+5. Start webhook forwarding (without printing secret):
+
+```bash
+npm run stripe:listen
+```
+
+6. Trigger test events:
+
+```bash
+npm run stripe:trigger:checkout
+npm run stripe:trigger:invoice-paid
+```
+
+Forward target used by the app:
+
+- `POST /api/webhooks/stripe`
 
 ## CI Quality Gate
 

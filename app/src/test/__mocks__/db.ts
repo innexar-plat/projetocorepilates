@@ -33,5 +33,9 @@ export const db = {
   supportTicket: createModelMock(),
   ticketMessage: createModelMock(),
   referral: createModelMock(),
+  post: createModelMock(),
+  galleryImage: createModelMock(),
+  galleryAlbum: createModelMock(),
+  siteSetting: createModelMock(),
   $transaction: jest.fn(),
 };
