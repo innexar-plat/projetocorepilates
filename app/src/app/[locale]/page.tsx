@@ -1,5 +1,6 @@
 import { SiteNav } from '@/components/layout/SiteNav';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { GrandOpeningPopup } from '@/components/sections/GrandOpeningPopup';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { WebsiteHomeContent } from '@/components/sections/WebsiteHomeContent';
 import { auth } from '@/lib/auth';
@@ -10,28 +11,29 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   const { locale } = await params;
   const isEn = locale === 'en';
   const isPt = locale === 'pt';
-  const title = isEn
-    ? 'Core Pilates Miami — Transform Your Body & Mind'
-    : isPt
-      ? 'Core Pilates Miami — Transforme Seu Corpo e Mente'
-      : 'Core Pilates Miami — Transforma Tu Cuerpo y Mente';
-  const description = isEn
-    ? 'Premium Pilates studio in Miami. Reformer & mat classes, certified instructors. Start your trial today.'
-    : isPt
-      ? 'Estúdio de Pilates premium em Miami. Aulas de reformer e mat. Comece sua aula experimental hoje.'
-      : 'Estudio de Pilates premium en Miami. Clases de reformer y mat. Empieza tu clase de prueba hoy.';
+  let title = 'Brazilian Core Pilates — Mueve tu cuerpo con proposito';
+  let description = 'Studio boutique de Pilates en Sebastian, Florida. Conoce la inauguracion, las profesoras y el pre-registro prioritario.';
+
+  if (isEn) {
+    title = 'Brazilian Core Pilates — Move Beyond Borders';
+    description = 'Boutique Pilates studio in Sebastian, Florida. Explore classes, meet the founders and join the opening pre-registration list.';
+  } else if (isPt) {
+    title = 'Brazilian Core Pilates — Va alem das fronteiras';
+    description = 'Studio boutique de Pilates em Sebastian, Florida. Conheca as professoras, as aulas e entre no pre-cadastro da inauguracao.';
+  }
+
   return {
     title,
     description,
     alternates: {
-      canonical: `https://corepilates.com/${locale}`,
+      canonical: `https://braziliancorepilates.com/${locale}`,
       languages: { en: '/en', pt: '/pt', es: '/es' },
     },
-    openGraph: { title, description, url: `https://corepilates.com/${locale}` },
+    openGraph: { title, description, url: `https://braziliancorepilates.com/${locale}` },
   };
 }
 
-export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
+export default async function HomePage({ params }: Readonly<{ params: Promise<{ locale: Locale }> }>) {
   const { locale } = await params;
   const session = await auth();
   const isAdmin = session?.user?.role === 'ADMIN';
@@ -42,6 +44,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
       <main>
         <HeroSection locale={locale} />
         <WebsiteHomeContent />
+        <GrandOpeningPopup locale={locale} />
       </main>
       <SiteFooter locale={locale} />
     </>

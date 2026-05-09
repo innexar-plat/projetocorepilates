@@ -1,12 +1,14 @@
 import { Link } from '@/i18n/navigation';
+import { getMarketingContent } from '@/lib/site-content';
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 
 type Props = { locale: Locale };
 
-export async function SiteFooter({ locale }: Props) {
+export async function SiteFooter({ locale }: Readonly<Props>) {
   const t = await getTranslations('nav');
   const tf = await getTranslations('footer');
+  const marketing = getMarketingContent(locale);
 
   const cols = [
     {
@@ -14,6 +16,7 @@ export async function SiteFooter({ locale }: Props) {
       links: [
         { href: '/',        label: t('home') },
         { href: '/aulas',   label: t('classes') },
+        { href: '/professores', label: marketing.teachersNavLabel },
         { href: '/galeria', label: t('gallery') },
         { href: '/blog',    label: t('blog') },
       ],
@@ -23,7 +26,7 @@ export async function SiteFooter({ locale }: Props) {
       links: [
         { href: '/planos',  label: t('plans') },
         { href: '/contato', label: t('contact') },
-        { href: '/cadastro', label: t('register') },
+        { href: '/cadastro', label: marketing.preRegisterLabel },
         { href: '/login',   label: t('login') },
       ],
     },
@@ -49,8 +52,22 @@ export async function SiteFooter({ locale }: Props) {
               />
             </div>
             <p className="mt-4 text-sm leading-relaxed text-[var(--color-muted)]">
-              {tf('tagline')}
+              {marketing.footer.tagline}
             </p>
+            <div className="mt-5 space-y-4 text-sm text-[var(--color-muted)]">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-ink)]">{marketing.footer.addressTitle}</p>
+                {marketing.footer.addressLines.map((line) => (
+                  <p key={line} className="mt-1">{line}</p>
+                ))}
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--color-ink)]">{marketing.footer.foundersTitle}</p>
+                {marketing.footer.founders.map((line) => (
+                  <p key={line} className="mt-1">{line}</p>
+                ))}
+              </div>
+            </div>
             <div className="mt-5 flex gap-3">
               {/* Instagram */}
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
@@ -102,11 +119,11 @@ export async function SiteFooter({ locale }: Props) {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[var(--color-border)] pt-6 sm:flex-row">
           <p className="text-xs text-[var(--color-muted)]">
-            © {new Date().getFullYear()} Core Pilates Miami. {tf('rights')}
+            © {new Date().getFullYear()} Brazilian Core Pilates. {tf('rights')}
           </p>
           <div className="flex items-center gap-4">
             <p className="text-xs text-[var(--color-muted)]">
-              📍 Miami, Florida
+              11606 US Highway #1, Sebastian, FL 32958
             </p>
             <p className="text-xs text-[var(--color-muted)]">
               {tf('madeByPrefix')}{' '}

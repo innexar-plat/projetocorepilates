@@ -1,4 +1,3 @@
-import { POST as registerPOST } from '@/app/api/v1/auth/register/route';
 import { POST as applyReferralPOST } from '@/app/api/v1/referrals/apply/route';
 import { POST as checkoutPOST } from '@/app/api/v1/subscriptions/checkout/route';
 import { DELETE as cancelSubscriptionDELETE } from '@/app/api/v1/subscriptions/cancel/route';
@@ -69,39 +68,8 @@ describe('Critical API flows integration', () => {
     sendEmailMock.mockResolvedValue(undefined);
   });
 
-  it('registers user and applies referral code through route + services + repository', async () => {
-    const userId = '11111111-1111-4111-8111-111111111111';
-
-    (db.user.findFirst as jest.Mock).mockResolvedValueOnce(null);
-    (db.user.create as jest.Mock).mockResolvedValueOnce({
-      id: userId,
-      name: 'Ana Silva',
-      email: 'ana@example.com',
-      phone: null,
-      role: 'CLIENT',
-      avatarUrl: null,
-      stripeCustomerId: null,
-      isActive: true,
-      createdAt: new Date('2026-03-28T00:00:00.000Z'),
-      updatedAt: new Date('2026-03-28T00:00:00.000Z'),
-      deletedAt: null,
-    });
-    (db.referral.findUnique as jest.Mock).mockResolvedValueOnce({
-      id: '22222222-2222-4222-8222-222222222222',
-      code: 'WELCOME10',
-      referrerId: '33333333-3333-4333-8333-333333333333',
-      referredId: null,
-      status: 'PENDING',
-      convertedAt: null,
-    });
-    (db.referral.update as jest.Mock).mockResolvedValueOnce({
-      id: '22222222-2222-4222-8222-222222222222',
-      code: 'WELCOME10',
-      referrerId: '33333333-3333-4333-8333-333333333333',
-      referredId: userId,
-      status: 'CONVERTED',
-      convertedAt: new Date('2026-03-28T00:01:00.000Z'),
-    });
+  it('keeps public registration closed', async () => {
+    const { POST: registerPOST } = await import('@/app/api/v1/auth/register/route');
 
     const req = new Request('http://localhost/api/v1/auth/register', {
       method: 'POST',
@@ -116,22 +84,9 @@ describe('Critical API flows integration', () => {
     const res = await registerPOST(req as any);
     const body = await res.json();
 
-    expect(res.status).toBe(201);
-    expect(body.data).toMatchObject({
-      id: userId,
-      email: 'ana@example.com',
-      role: 'CLIENT',
-    });
-    expect(db.referral.update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { code: 'WELCOME10' },
-        data: expect.objectContaining({
-          referredId: userId,
-          status: 'CONVERTED',
-        }),
-      }),
-    );
-    expect(sendEmailMock).toHaveBeenCalled();
+    expect(res.status).toBe(403);
+    expect(body.error).toBe('Registration Closed');
+    expect(sendEmailMock).not.toHaveBeenCalled();
   });
 
   it('applies referral code for authenticated user through route + service + repository', async () => {
@@ -249,6 +204,7 @@ describe('Critical API flows integration', () => {
     });
     expect(stripeCustomerCreateMock).toHaveBeenCalled();
     expect(stripeCheckoutCreateMock).toHaveBeenCalled();
+    expect(db.user.findFirst).toHaveBeenCalled();
   });
 
   it('cancels subscription at period end for authenticated user', async () => {

@@ -1,14 +1,18 @@
+name: braziliancorepilates
+
 services:
   db:
     image: postgres:16-alpine
     container_name: core-pilates-db
     restart: unless-stopped
+    env_file:
+      - .env.docker
     environment:
       POSTGRES_DB: core_pilates
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
+      POSTGRES_PASSWORD: 6840ebdfd3a8cfddfb2b5872201f4b1b1089588c9cd6229a984ec6ce91a00b7b
+    networks:
+      - core-pilates-internal
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -25,24 +29,30 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    networks:
+      - core-pilates-internal
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   minio-init:
     image: minio/mc:latest
     container_name: core-pilates-minio-init
     depends_on:
       minio:
-        condition: service_started
+        condition: service_healthy
     env_file:
       - .env.docker
+    networks:
+      - core-pilates-internal
     entrypoint: >
       /bin/sh -c '
-      until mc alias set local http://minio:9000 minioadmin minioadmin; do sleep 2; done;
-      mc alias set local http://minio:9000 minioadmin minioadmin;
+      until mc alias set local http://minio:9000 "$${MINIO_ACCESS_KEY}" "$${MINIO_SECRET_KEY}"; do sleep 2; done;
+      mc alias set local http://minio:9000 "$${MINIO_ACCESS_KEY}" "$${MINIO_SECRET_KEY}";
       mc mb -p local/$${MINIO_BUCKET} || true;
       mc anonymous set download local/$${MINIO_BUCKET} || true;
       exit 0;'
@@ -63,16 +73,39 @@ services:
     env_file:
       - .env.docker
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/core_pilates
-      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_URL: https://braziliancorepilates.com
       AUTH_TRUST_HOST: "true"
       MINIO_ENDPOINT: minio
       NODE_ENV: production
       PORT: 3000
-    ports:
-      - "3000:3000"
-    command: sh -c "npx prisma db push --accept-data-loss && npm run start"
+      HOSTNAME: 0.0.0.0
+    networks:
+      - core-pilates-internal
+      - fixelo_fixelo-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=fixelo_fixelo-network"
+      - "traefik.http.routers.core-pilates.rule=Host(`braziliancorepilates.com`) || Host(`www.braziliancorepilates.com`)"
+      - "traefik.http.routers.core-pilates.entrypoints=websecure"
+      - "traefik.http.routers.core-pilates.tls.certresolver=cloudflare"
+      - "traefik.http.routers.core-pilates.service=core-pilates-service"
+      - "traefik.http.services.core-pilates-service.loadbalancer.server.port=3000"
+      - "traefik.http.services.core-pilates-service.loadbalancer.passHostHeader=true"
+      - "traefik.http.routers.core-pilates-www.rule=Host(`www.braziliancorepilates.com`)"
+      - "traefik.http.routers.core-pilates-www.entrypoints=websecure"
+      - "traefik.http.routers.core-pilates-www.tls.certresolver=cloudflare"
+      - "traefik.http.routers.core-pilates-www.middlewares=core-pilates-redirect-to-non-www"
+      - "traefik.http.routers.core-pilates-www.service=core-pilates-service"
+      - "traefik.http.middlewares.core-pilates-redirect-to-non-www.redirectregex.regex=^https://www\\.braziliancorepilates\\.com/(.*)"
+      - "traefik.http.middlewares.core-pilates-redirect-to-non-www.redirectregex.replacement=https://braziliancorepilates.com/$${1}"
+      - "traefik.http.middlewares.core-pilates-redirect-to-non-www.redirectregex.permanent=true"
 
 volumes:
   postgres_data:
   minio_data:
+
+networks:
+  core-pilates-internal:
+    driver: bridge
+  fixelo_fixelo-network:
+    external: true

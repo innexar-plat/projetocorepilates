@@ -5,6 +5,7 @@ import { usersRepository } from '@/modules/users/repositories/users.repository';
 import { stripe, stripeCall } from '@/lib/stripe';
 import { apiSuccess, apiError } from '@/lib/api';
 import { UserRole } from '@prisma/client';
+import Stripe from 'stripe';
 import { z } from 'zod';
 
 const STRIPE_PRICE_ID_REGEX = /^price_[A-Za-z0-9]+$/;
@@ -58,15 +59,24 @@ export async function POST(req: NextRequest) {
       await usersRepository.updateStripeCustomerId(user.id, stripeCustomerId);
     }
 
+    if (!stripeCustomerId) {
+      return apiError(new Error('Unable to resolve Stripe customer for checkout'), 500);
+    }
+
+    const customerId: string = stripeCustomerId;
+    const priceId: string = plan.stripePriceId;
+
+    const checkoutParams: Stripe.Checkout.SessionCreateParams = {
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${appUrl}/checkout/processando?checkout=success`,
+      cancel_url: `${appUrl}/planos`,
+      metadata: { userId, planId, adminInitiated: 'true' },
+    };
+
     const checkoutSession = await stripeCall('create checkout session', () =>
-      stripe.checkout.sessions.create({
-        mode: 'subscription',
-        customer: stripeCustomerId!,
-        line_items: [{ price: plan.stripePriceId, quantity: 1 }],
-        success_url: `${appUrl}/checkout/processando?checkout=success`,
-        cancel_url: `${appUrl}/planos`,
-        metadata: { userId, planId, adminInitiated: 'true' },
-      }),
+      stripe.checkout.sessions.create(checkoutParams),
     );
 
     return apiSuccess({

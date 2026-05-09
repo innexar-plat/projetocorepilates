@@ -34,7 +34,7 @@ const bodyFont = DM_Sans({
   display: 'swap',
 });
 
-const BASE_URL = 'https://corepilates.com';
+const BASE_URL = 'https://braziliancorepilates.com';
 
 const OPEN_GRAPH_LOCALE_MAP: Record<Locale, string> = {
   en: 'en_US',
@@ -54,23 +54,23 @@ export async function generateMetadata({
   const metadata: Metadata = {
     metadataBase: new URL(BASE_URL),
     title: {
-      default: 'Core Pilates Miami — Transform Your Body & Mind',
-      template: '%s | Core Pilates Miami',
+      default: 'Brazilian Core Pilates — Move Beyond Borders',
+      template: '%s | Brazilian Core Pilates',
     },
     description:
-      'Premium Pilates studio in Miami, FL. Join 500+ students and discover the most effective method for strength, flexibility and well-being. Book your trial class today.',
+      'Boutique Pilates studio in Sebastian, Florida. Meet Brazilian Core Pilates and discover purposeful movement, premium guidance and a welcoming opening experience.',
     keywords: [
-      'pilates miami',
-      'pilates studio miami',
+      'pilates sebastian fl',
+      'brazilian core pilates',
       'reformer pilates',
       'mat pilates',
       'pilates classes',
       'core strength',
       'flexibility training',
-      'wellness miami',
+      'wellness sebastian florida',
     ],
-    authors: [{ name: 'Core Pilates Miami' }],
-    creator: 'Core Pilates Miami',
+    authors: [{ name: 'Brazilian Core Pilates' }],
+    creator: 'Brazilian Core Pilates',
     alternates: {
       canonical: `${BASE_URL}/${normalizedLocale}`,
       languages: {
@@ -85,24 +85,24 @@ export async function generateMetadata({
       alternateLocale: Object.entries(OPEN_GRAPH_LOCALE_MAP)
         .filter(([key]) => key !== normalizedLocale)
         .map(([, value]) => value),
-      siteName: 'Core Pilates Miami',
-      title: 'Core Pilates Miami — Transform Your Body & Mind',
+      siteName: 'Brazilian Core Pilates',
+      title: 'Brazilian Core Pilates — Move Beyond Borders',
       description:
-        'Premium Pilates studio in Miami, FL. 500+ students, certified instructors, reformer & mat classes.',
+        'Boutique Pilates studio in Sebastian, Florida. Grand opening, personalized Pilates and direct guidance from the founders.',
       url: `${BASE_URL}/${normalizedLocale}`,
       images: [
         {
           url: '/og-image.jpg',
           width: 1200,
           height: 630,
-          alt: 'Core Pilates Miami Studio',
+          alt: 'Brazilian Core Pilates Studio',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Core Pilates Miami',
-      description: 'Premium Pilates studio in Miami. Transform your body and mind.',
+      title: 'Brazilian Core Pilates',
+      description: 'Boutique Pilates studio in Sebastian, Florida. Move beyond borders.',
       images: ['/og-image.jpg'],
     },
     robots: {

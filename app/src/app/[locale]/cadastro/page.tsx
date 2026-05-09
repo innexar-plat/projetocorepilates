@@ -1,41 +1,20 @@
-import { RegisterForm } from '@/components/sections/RegisterForm';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { SiteNav } from '@/components/layout/SiteNav';
+import { PreRegistrationCard } from '@/components/sections/PreRegistrationCard';
+import { auth } from '@/lib/auth';
+import { getMarketingContent } from '@/lib/site-content';
 import type { Locale } from '@/i18n/routing';
 import type { Metadata } from 'next';
 
-const copy: Record<Locale, { eyebrow: string; title: string; subtitle: string; bullets: string[] }> = {
-  pt: {
-    eyebrow: 'Comece hoje',
-    title: 'Crie sua conta premium',
-    subtitle: 'Tenha acesso ao portal, agende aulas e acompanhe sua evolução.',
-    bullets: ['Cadastro rápido e seguro', 'Portal com histórico completo', 'Controle de aulas e pagamentos'],
-  },
-  en: {
-    eyebrow: 'Start today',
-    title: 'Create your premium account',
-    subtitle: 'Get portal access, book classes and track your progress.',
-    bullets: ['Fast and secure signup', 'Portal with full history', 'Classes and payments control'],
-  },
-  es: {
-    eyebrow: 'Comienza hoy',
-    title: 'Crea tu cuenta premium',
-    subtitle: 'Accede al portal, reserva clases y sigue tu evolución.',
-    bullets: ['Registro rápido y seguro', 'Portal con historial completo', 'Control de clases y pagos'],
-  },
-};
-
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
+  const copy = getMarketingContent(locale).registrationClosed;
 
   return {
-    title: locale === 'pt' ? 'Cadastro' : locale === 'es' ? 'Registro' : 'Sign up',
-    description:
-      locale === 'pt'
-        ? 'Crie sua conta no Core Pilates com segurança.'
-        : locale === 'es'
-          ? 'Crea tu cuenta en Core Pilates de forma segura.'
-          : 'Create your Core Pilates account securely.',
+    title: copy.title,
+    description: copy.subtitle,
     alternates: {
-      canonical: `https://corepilates.com/${locale}/cadastro`,
+      canonical: `https://braziliancorepilates.com/${locale}/cadastro`,
     },
     robots: {
       index: false,
@@ -51,33 +30,30 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 
 export default async function RegisterPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
-  const c = copy[locale];
+  const c = getMarketingContent(locale).registrationClosed;
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   return (
-    <main className="premium-bg mx-auto flex min-h-screen w-full max-w-6xl items-center rounded-3xl px-4 py-10 sm:px-6">
-      <div className="grid w-full items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="glass-card hidden rounded-3xl p-8 lg:block">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--color-brand)]">{c.eyebrow}</p>
-          <h1 className="mt-2 text-5xl font-black leading-tight text-[var(--color-ink)]">{c.title}</h1>
-          <p className="mt-3 max-w-md text-base text-[var(--color-muted)]">{c.subtitle}</p>
-          <ul className="mt-8 space-y-3">
-            {c.bullets.map((item) => (
-              <li key={item} className="flex items-center gap-3 text-sm text-[var(--color-ink)]">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-brand)]/15 text-[var(--color-brand)]">
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
+    <>
+      <SiteNav locale={locale} isAdmin={isAdmin} />
+      <main className="premium-bg mx-auto flex min-h-[calc(100vh-64px)] w-full max-w-6xl items-center rounded-3xl px-4 py-10 sm:px-6">
+        <div className="grid w-full items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="glass-card rounded-3xl p-8">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--color-brand)]">{c.eyebrow}</p>
+            <h1 className="mt-2 text-5xl font-black leading-tight text-[var(--color-ink)]">{c.title}</h1>
+            <p className="mt-3 max-w-md text-base text-[var(--color-muted)]">{c.subtitle}</p>
+            <div className="mt-8 rounded-2xl border border-[var(--color-border)] bg-white/80 p-5">
+              <p className="text-sm leading-relaxed text-[var(--color-muted)]">{c.note}</p>
+            </div>
+          </section>
 
-        <section>
-          <RegisterForm />
-        </section>
-      </div>
-    </main>
+          <section>
+            <PreRegistrationCard locale={locale} source={`pre-registration-page-${locale}`} />
+          </section>
+        </div>
+      </main>
+      <SiteFooter locale={locale} />
+    </>
   );
 }

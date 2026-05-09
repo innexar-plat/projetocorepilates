@@ -56,7 +56,7 @@ describe('POST /api/v1/auth/reset-password', () => {
 
     const req = new Request('http://localhost/api/v1/auth/reset-password', {
       method: 'POST',
-      body: JSON.stringify({ token: 'token_abc', newPassword: 'StrongPass1' }),
+      body: JSON.stringify({ token: 'a'.repeat(64), newPassword: 'StrongPass1' }),
       headers: { 'x-forwarded-for': '127.0.0.1' },
     });
 
@@ -65,6 +65,6 @@ describe('POST /api/v1/auth/reset-password', () => {
 
     expect(res.status).toBe(200);
     expect(body.data).toEqual({ data: { message: 'Password updated successfully.' } });
-    expect(resetPasswordMock).toHaveBeenCalledWith('token_abc', 'StrongPass1');
+    expect(resetPasswordMock).toHaveBeenCalledWith('a'.repeat(64), 'StrongPass1');
   });
 });

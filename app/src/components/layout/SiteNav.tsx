@@ -5,19 +5,22 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from '@/components/molecules/LanguageSwitcher';
 import { cn } from '@/utils/cn';
+import { getMarketingContent } from '@/lib/site-content';
 import type { Locale } from '@/i18n/routing';
 
 type Props = { locale: Locale; isAdmin?: boolean };
 
-export function SiteNav({ locale, isAdmin }: Props) {
+export function SiteNav({ locale }: Readonly<Props>) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const marketing = getMarketingContent(locale);
 
   const LINKS = [
     { href: '/',        label: t('home') },
     { href: '/planos',  label: t('plans') },
     { href: '/aulas',   label: t('classes') },
+    { href: '/professores', label: marketing.teachersNavLabel },
     { href: '/galeria', label: t('gallery') },
     { href: '/blog',    label: t('blog') },
     { href: '/contato', label: t('contact') },

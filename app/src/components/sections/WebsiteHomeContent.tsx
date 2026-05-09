@@ -5,6 +5,7 @@ import { FadeIn } from '@/components/atoms/FadeIn';
 import { PlanCard } from '@/components/molecules/PlanCard';
 import { BenefitsSection } from '@/components/sections/BenefitsSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
+import { getMarketingContent } from '@/lib/site-content';
 import { useResource } from '@/hooks/use-resource';
 import { websiteService } from '@/services/website.service';
 import { useTranslations, useLocale } from 'next-intl';
@@ -14,10 +15,12 @@ import type { Locale } from '@/i18n/routing';
 export function WebsiteHomeContent() {
   const t = useTranslations('home');
   const locale = useLocale() as Locale;
+  const marketing = getMarketingContent(locale);
   const plansClassesLabel = String(t.raw('plans.classes'));
   const plans = useResource(() => websiteService.listPlans());
   const classes = useResource(() => websiteService.listClasses());
   const [openDays, setOpenDays] = useState<Record<string, boolean>>({});
+  type PilatesClass = NonNullable<typeof classes.data>[number];
 
   const weekdayOrder: Record<string, number> = {
     MONDAY: 1,
@@ -29,35 +32,38 @@ export function WebsiteHomeContent() {
     SUNDAY: 7,
   };
 
-  const weekdayLabel: Record<string, string> = locale === 'pt'
-    ? {
-        MONDAY: 'Segunda-feira',
-        TUESDAY: 'Terça-feira',
-        WEDNESDAY: 'Quarta-feira',
-        THURSDAY: 'Quinta-feira',
-        FRIDAY: 'Sexta-feira',
-        SATURDAY: 'Sábado',
-        SUNDAY: 'Domingo',
-      }
-    : locale === 'es'
-      ? {
-          MONDAY: 'Lunes',
-          TUESDAY: 'Martes',
-          WEDNESDAY: 'Miércoles',
-          THURSDAY: 'Jueves',
-          FRIDAY: 'Viernes',
-          SATURDAY: 'Sábado',
-          SUNDAY: 'Domingo',
-        }
-      : {
-          MONDAY: 'Monday',
-          TUESDAY: 'Tuesday',
-          WEDNESDAY: 'Wednesday',
-          THURSDAY: 'Thursday',
-          FRIDAY: 'Friday',
-          SATURDAY: 'Saturday',
-          SUNDAY: 'Sunday',
-        };
+  let weekdayLabel: Record<string, string>;
+  if (locale === 'pt') {
+    weekdayLabel = {
+      MONDAY: 'Segunda-feira',
+      TUESDAY: 'Terça-feira',
+      WEDNESDAY: 'Quarta-feira',
+      THURSDAY: 'Quinta-feira',
+      FRIDAY: 'Sexta-feira',
+      SATURDAY: 'Sábado',
+      SUNDAY: 'Domingo',
+    };
+  } else if (locale === 'es') {
+    weekdayLabel = {
+      MONDAY: 'Lunes',
+      TUESDAY: 'Martes',
+      WEDNESDAY: 'Miércoles',
+      THURSDAY: 'Jueves',
+      FRIDAY: 'Viernes',
+      SATURDAY: 'Sábado',
+      SUNDAY: 'Domingo',
+    };
+  } else {
+    weekdayLabel = {
+      MONDAY: 'Monday',
+      TUESDAY: 'Tuesday',
+      WEDNESDAY: 'Wednesday',
+      THURSDAY: 'Thursday',
+      FRIDAY: 'Friday',
+      SATURDAY: 'Saturday',
+      SUNDAY: 'Sunday',
+    };
+  }
 
   const classesByDay = ((classes.data ?? [])
     .slice()
@@ -71,7 +77,7 @@ export function WebsiteHomeContent() {
       if (!acc[key]) acc[key] = [];
       acc[key].push(item);
       return acc;
-    }, {} as Record<string, (typeof classes.data extends Array<infer U> ? U : never)[]>));
+    }, {} as Record<string, PilatesClass[]>));
 
   const dayEntries = Object.entries(classesByDay).sort(
     ([a], [b]) => (weekdayOrder[a] ?? 99) - (weekdayOrder[b] ?? 99),
@@ -93,6 +99,59 @@ export function WebsiteHomeContent() {
 
   return (
     <>
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
+        <FadeIn variant="up">
+          <div className="grid gap-6 overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-[linear-gradient(135deg,rgba(246,241,233,0.95),rgba(255,255,255,1))] p-6 shadow-[0_25px_70px_rgba(15,23,42,0.08)] lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-10">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-brand)]">
+                {marketing.methodSection.eyebrow}
+              </p>
+              <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                {marketing.methodSection.subtitle}
+              </p>
+              <h2
+                className="mt-3 max-w-3xl text-3xl font-bold text-[var(--color-ink)] sm:text-4xl lg:text-5xl"
+                style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.025em' }}
+              >
+                {marketing.methodSection.title}
+              </h2>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+                {marketing.methodSection.intro}
+              </p>
+              <p className="mt-4 max-w-3xl text-base leading-8 text-[var(--color-muted)] sm:text-lg">
+                {marketing.methodSection.philosophy}
+              </p>
+            </div>
+
+            <div className="flex h-full flex-col justify-between rounded-[1.75rem] bg-[var(--color-ink)] p-5 text-white sm:p-6">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-brand)]">
+                  {marketing.methodSection.missionTitle}
+                </p>
+                <p className="mt-4 text-sm leading-7 text-white/82 sm:text-base">
+                  {marketing.methodSection.missionText}
+                </p>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--color-brand)]">Core</p>
+                  <p className="mt-2 text-sm font-semibold text-white/90">Strength with control</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--color-brand)]">Posture</p>
+                  <p className="mt-2 text-sm font-semibold text-white/90">Alignment with elegance</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--color-brand)]">Confidence</p>
+                  <p className="mt-2 text-sm font-semibold text-white/90">Movement with purpose</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+      </section>
+
       {/* Benefits */}
       <BenefitsSection />
 

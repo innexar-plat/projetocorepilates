@@ -101,7 +101,8 @@ export function apiError(error: unknown, forceStatus?: number): NextResponse {
 
   if (isSyntaxError) {
     incrementMetric('api.errors.400');
-    logger.warn({ requestId, message: error.message }, 'Malformed JSON payload');
+    const syntaxMessage = error instanceof Error ? error.message : 'SyntaxError';
+    logger.warn({ requestId, message: syntaxMessage }, 'Malformed JSON payload');
     return NextResponse.json(
       {
         requestId,

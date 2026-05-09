@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { apiSuccess, apiError, apiClientError } from '@/lib/api';
 import { z } from 'zod';
 import { BookingStatus, ClassSessionStatus } from '@prisma/client';
+import Stripe from 'stripe';
 
 const STRIPE_PRICE_ID_REGEX = /^price_[A-Za-z0-9]+$/;
 
@@ -108,20 +109,29 @@ export async function POST(req: NextRequest) {
       await usersRepository.updateStripeCustomerId(user.id, stripeCustomerId);
     }
 
-    const checkoutSession = await stripeCall('create checkout session', () =>
-      stripe.checkout.sessions.create({
-        mode: 'subscription',
-        customer: stripeCustomerId!,
-        line_items: [{ price: plan.stripePriceId, quantity: 1 }],
-        success_url: successUrl ?? `${appUrl}/checkout/processando?checkout=success`,
-        cancel_url: cancelUrl ?? `${appUrl}/planos`,
-        client_reference_id: session.user.id,
+    if (!stripeCustomerId) {
+      return apiError(new Error('Unable to resolve Stripe customer for checkout'), 500);
+    }
+
+    const customerId: string = stripeCustomerId;
+    const priceId: string = plan.stripePriceId;
+
+    const checkoutParams: Stripe.Checkout.SessionCreateParams = {
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: successUrl ?? `${appUrl}/checkout/processando?checkout=success`,
+      cancel_url: cancelUrl ?? `${appUrl}/planos`,
+      client_reference_id: session.user.id,
+      metadata: { userId: session.user.id, planId, classSessionId },
+      subscription_data: {
         metadata: { userId: session.user.id, planId, classSessionId },
-        subscription_data: {
-          metadata: { userId: session.user.id, planId, classSessionId },
-        },
-        allow_promotion_codes: true,
-      }),
+      },
+      allow_promotion_codes: true,
+    };
+
+    const checkoutSession = await stripeCall('create checkout session', () =>
+      stripe.checkout.sessions.create(checkoutParams),
     );
 
     return apiSuccess({ data: { url: checkoutSession.url, sessionId: checkoutSession.id } });

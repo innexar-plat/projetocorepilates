@@ -91,7 +91,7 @@ export function HeroSection({ locale }: Props) {
               }}
             >
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-brand)] animate-pulse" />
-              Core Pilates Miami
+              Brazilian Core Pilates
             </span>
           </FadeIn>
 

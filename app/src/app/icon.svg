@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bcp-gold" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f3d27a"/>
+      <stop offset="55%" stop-color="#c79a2c"/>
+      <stop offset="100%" stop-color="#8f6713"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#0f2a2d"/>
+  <circle cx="64" cy="64" r="44" fill="none" stroke="url(#bcp-gold)" stroke-width="8"/>
+  <path d="M39 87V41h18c15 0 23 7 23 19 0 7-3 12-9 15l12 12H69L58 77h-5v10H39zm14-21h4c6 0 10-3 10-8s-4-8-10-8h-4v16z" fill="#fff7e1"/>
+</svg>

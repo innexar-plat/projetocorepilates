@@ -2,15 +2,17 @@
 
 import { signIn, getSession } from 'next-auth/react';
 import { useState } from 'react';
-import { Link } from '@/i18n/navigation';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { getMarketingContent } from '@/lib/site-content';
 
 export function LoginForm() {
   const router = useRouter();
   const t = useTranslations('auth.login');
+  const locale = useLocale() as 'en' | 'pt' | 'es';
+  const marketing = getMarketingContent(locale).login;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -94,9 +96,9 @@ export function LoginForm() {
       ) : null}
 
       <p className="mt-5 text-center text-sm text-[var(--color-muted)]">
-        {t('noAccount')} {' '}
+        {marketing.noAccount} {' '}
         <Link href="/cadastro" className="font-semibold text-[var(--color-brand)] hover:underline">
-          {t('registerLink')}
+          {marketing.waitlistLink}
         </Link>
       </p>
     </div>

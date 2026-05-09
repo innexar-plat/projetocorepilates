@@ -503,7 +503,7 @@ async function seedPlans() {
         description: '8 classes per month. Perfect to get started.',
         price: 99,
         classesPerMonth: 8,
-        isActive: false,
+        isActive: true,
         order: 1,
       },
       create: {
@@ -513,7 +513,7 @@ async function seedPlans() {
         stripePriceId: 'price_starter_placeholder',
         stripeProductId: 'prod_starter_placeholder',
         classesPerMonth: 8,
-        isActive: false,
+        isActive: true,
         order: 1,
       },
     }),
@@ -524,7 +524,7 @@ async function seedPlans() {
         description: '12 classes per month. Most popular plan.',
         price: 179,
         classesPerMonth: 12,
-        isActive: false,
+        isActive: true,
         order: 2,
       },
       create: {
@@ -534,7 +534,7 @@ async function seedPlans() {
         stripePriceId: 'price_essential_placeholder',
         stripeProductId: 'prod_essential_placeholder',
         classesPerMonth: 12,
-        isActive: false,
+        isActive: true,
         order: 2,
       },
     }),
@@ -545,7 +545,7 @@ async function seedPlans() {
         description: 'Unlimited classes for maximum results.',
         price: 249,
         classesPerMonth: 999,
-        isActive: false,
+        isActive: true,
         order: 3,
       },
       create: {
@@ -555,7 +555,7 @@ async function seedPlans() {
         stripePriceId: 'price_premium_placeholder',
         stripeProductId: 'prod_premium_placeholder',
         classesPerMonth: 999,
-        isActive: false,
+        isActive: true,
         order: 3,
       },
     }),
@@ -677,25 +677,33 @@ async function seedClassesAndSessions() {
 async function main() {
   console.log('🌱 Seeding database...');
 
-  const passwordHash = await bcrypt.hash('Admin@123', 12);
-  const admin = await db.user.upsert({
-    where: { email: 'admin@corepilates.com' },
-    update: {
-      name: 'Admin Core Pilates',
-      role: UserRole.ADMIN,
-      isActive: true,
-      passwordHash,
-    },
-    create: {
-      name: 'Admin Core Pilates',
-      email: 'admin@corepilates.com',
-      passwordHash,
-      role: UserRole.ADMIN,
-      isActive: true,
-    },
-  });
+  const passwordHash = await bcrypt.hash('Admin@2026', 12);
+  const adminUsers = [
+    { name: 'Admin Brazilian Core Pilates', email: 'admin@corepilates.com' },
+    { name: 'Admin Brazilian Core Pilates', email: 'admin@braziliancorepilates.com' },
+    { name: 'Brazilian Core Pilates', email: 'braziliancorepilates@gmail.com' },
+  ];
 
-  console.log(`✅ Admin user: ${admin.email}`);
+  for (const adminUser of adminUsers) {
+    const admin = await db.user.upsert({
+      where: { email: adminUser.email },
+      update: {
+        name: adminUser.name,
+        role: UserRole.ADMIN,
+        isActive: true,
+        passwordHash,
+      },
+      create: {
+        name: adminUser.name,
+        email: adminUser.email,
+        passwordHash,
+        role: UserRole.ADMIN,
+        isActive: true,
+      },
+    });
+
+    console.log(`✅ Admin user: ${admin.email}`);
+  }
 
   await seedPlans();
   await seedSettings();
