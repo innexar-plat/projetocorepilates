@@ -39,7 +39,7 @@
   },
   "nav": {
     "home": "Home",
-    "plans": "Plans",
+    "plans": "Pricing",
     "classes": "Classes",
     "gallery": "Gallery",
     "blog": "Blog",
@@ -48,15 +48,25 @@
     "register": "Sign up",
     "portal": "My Portal",
     "logout": "Log out",
-    "admin": "Admin"
+    "admin": "Admin",
+    "bookClass": "Book Your Class"
   },
   "home": {
     "hero": {
+      "headlineLine1": "MOVE.",
+      "headlineLine2": "STRENGTHEN.",
+      "headlineLine3": "TRANSFORM.",
+      "tagline": "ELEVATED PILATES. TIMELESS RESULTS.",
       "headlinePart1": "Transform your body",
       "headlinePart2": "and mind",
       "subheadline": "Join Brazilian Core Pilates in Sebastian and discover a premium method for strength, flexibility and well-being.",
+      "ctaBook": "BOOK YOUR CLASS",
       "cta": "Start today",
       "ctaSecondary": "See classes",
+      "featureInstructors": "Expert Instructors",
+      "featureEnvironment": "Luxury Environment",
+      "featureAttention": "Personalized Attention",
+      "featureTransform": "Transform Your Body & Mind",
       "stat1Value": "500+",
       "stat1Label": "Students",
       "stat2Value": "10+",

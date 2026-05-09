@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --color-paper: #f4f8f8;
-    --color-paper-2: #e9f1f2;
-    --color-surface: #fcfefe;
-    --color-border: #d4e2e5;
-    --color-ink: #1f2e35;
-    --color-muted: #5f7480;
-    --color-brand: #3c8ea8;
-    --color-brand-dark: #2f7084;
+    --color-paper: #f8f5ef;
+    --color-paper-2: #ede9de;
+    --color-surface: #fdfcf9;
+    --color-border: #ddd4c2;
+    --color-ink: #1a2028;
+    --color-muted: #5a5248;
+    --color-brand: #C4975A;
+    --color-brand-dark: #A07840;
   }
 
   html {
@@ -24,9 +24,9 @@
     min-height: 100vh;
     overflow-x: hidden;
     background:
-      radial-gradient(1200px 520px at 10% -8%, #e7f3f5 0%, rgba(231, 243, 245, 0) 58%),
-      radial-gradient(980px 420px at 95% 2%, #dceef2 0%, rgba(220, 238, 242, 0) 62%),
-      linear-gradient(180deg, #f8fcfd 0%, #f2f8fa 50%, #eef5f8 100%);
+      radial-gradient(1200px 520px at 10% -8%, #f0ead8 0%, rgba(240,234,216,0) 58%),
+      radial-gradient(980px 420px at 95% 2%, #ede4d0 0%, rgba(237,228,208,0) 62%),
+      linear-gradient(180deg, #fdfcf8 0%, #f8f4ec 50%, #f3ede0 100%);
     color: var(--color-ink);
     font-family: var(--font-body), var(--font-geist-sans), "Segoe UI", sans-serif;
     font-size: 16px;
@@ -48,10 +48,10 @@
     opacity: 0.42;
     filter: blur(64px) saturate(110%);
     background:
-      radial-gradient(42% 38% at 12% 22%, rgba(112, 181, 201, 0.26) 0%, rgba(112, 181, 201, 0) 74%),
-      radial-gradient(36% 34% at 88% 16%, rgba(96, 154, 191, 0.22) 0%, rgba(96, 154, 191, 0) 76%),
-      radial-gradient(32% 30% at 28% 78%, rgba(180, 218, 227, 0.28) 0%, rgba(180, 218, 227, 0) 76%),
-      radial-gradient(30% 34% at 76% 82%, rgba(159, 203, 215, 0.24) 0%, rgba(159, 203, 215, 0) 76%);
+      radial-gradient(42% 38% at 12% 22%, rgba(196,151,90,0.18) 0%, rgba(196,151,90,0) 74%),
+      radial-gradient(36% 34% at 88% 16%, rgba(180,130,70,0.14) 0%, rgba(180,130,70,0) 76%),
+      radial-gradient(32% 30% at 28% 78%, rgba(210,180,130,0.20) 0%, rgba(210,180,130,0) 76%),
+      radial-gradient(30% 34% at 76% 82%, rgba(190,160,110,0.16) 0%, rgba(190,160,110,0) 76%);
     animation: watercolorFloatA 34s ease-in-out infinite alternate;
   }
 
@@ -59,9 +59,9 @@
     opacity: 0.3;
     filter: blur(78px) saturate(105%);
     background:
-      radial-gradient(38% 36% at 18% 68%, rgba(130, 184, 203, 0.24) 0%, rgba(130, 184, 203, 0) 74%),
-      radial-gradient(34% 30% at 80% 62%, rgba(150, 198, 212, 0.22) 0%, rgba(150, 198, 212, 0) 74%),
-      radial-gradient(28% 30% at 52% 18%, rgba(198, 226, 233, 0.28) 0%, rgba(198, 226, 233, 0) 76%);
+      radial-gradient(38% 36% at 18% 68%, rgba(200,155,90,0.16) 0%, rgba(200,155,90,0) 74%),
+      radial-gradient(34% 30% at 80% 62%, rgba(185,145,80,0.14) 0%, rgba(185,145,80,0) 74%),
+      radial-gradient(28% 30% at 52% 18%, rgba(215,190,140,0.20) 0%, rgba(215,190,140,0) 76%);
     animation: watercolorFloatB 46s ease-in-out infinite alternate;
   }
 

@@ -48,10 +48,20 @@
     "register": "Registrarse",
     "portal": "Mi Portal",
     "logout": "Cerrar sesión",
-    "admin": "Admin"
+    "admin": "Admin",
+    "bookClass": "Reserva Tu Clase"
   },
   "home": {
     "hero": {
+      "headlineLine1": "MUÉVETE.",
+      "headlineLine2": "FORTALÉCETE.",
+      "headlineLine3": "TRANSFÓRMATE.",
+      "tagline": "PILATES ELEVADO. RESULTADOS ETERNOS.",
+      "ctaBook": "RESERVA TU CLASE",
+      "featureInstructors": "Instructores Expertos",
+      "featureEnvironment": "Ambiente de Lujo",
+      "featureAttention": "Atención Personalizada",
+      "featureTransform": "Transforma Tu Cuerpo y Mente",
       "headlinePart1": "Transforma tu cuerpo",
       "headlinePart2": "y tu mente",
       "subheadline": "Unete a Brazilian Core Pilates en Sebastian y descubre un metodo premium para fuerza, flexibilidad y bienestar.",

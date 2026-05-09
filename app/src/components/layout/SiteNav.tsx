@@ -85,6 +85,13 @@ export function SiteNav({ locale }: Readonly<Props>) {
           >
             {t('login')}
           </Link>
+          <Link
+            href="/cadastro"
+            locale={locale}
+            className="rounded-full bg-[var(--color-brand)] px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-sm transition-all hover:bg-[var(--color-brand-dark)] hover:scale-[1.03]"
+          >
+            {t('bookClass')}
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -139,6 +146,14 @@ export function SiteNav({ locale }: Readonly<Props>) {
               className="flex-1 rounded-lg border border-[var(--color-border)] py-2 text-center text-sm font-medium text-[var(--color-muted)] hover:border-[var(--color-brand)] hover:text-[var(--color-brand)]"
             >
               {t('login')}
+            </Link>
+            <Link
+              href="/cadastro"
+              locale={locale}
+              onClick={() => setOpen(false)}
+              className="flex-1 rounded-full bg-[var(--color-brand)] py-2 text-center text-xs font-bold uppercase tracking-[0.12em] text-white hover:bg-[var(--color-brand-dark)]"
+            >
+              {t('bookClass')}
             </Link>
           </div>
         </nav>

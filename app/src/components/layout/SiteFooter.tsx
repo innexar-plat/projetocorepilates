@@ -139,6 +139,27 @@ export async function SiteFooter({ locale }: Readonly<Props>) {
           </div>
         </div>
       </div>
+
+      {/* Dark bottom banner matching mockup */}
+      <div className="bg-[var(--color-ink)] py-10 px-4">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-6 sm:flex-row sm:px-6">
+          <div className="flex items-center gap-4">
+            <img src="/logo/brazilian-core-pilates-logo.png" alt="Brazilian Core Pilates" className="h-12 w-auto brightness-0 invert opacity-90" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/50">Where Movement Becomes</p>
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--color-brand)]">Strength, Elegance, and Transformation.</p>
+            </div>
+          </div>
+          <Link
+            href="/cadastro"
+            locale={locale}
+            className="rounded-full bg-[var(--color-brand)] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[var(--color-brand-dark)] shrink-0"
+          >
+            Book Your Class Today
+          </Link>
+        </div>
+      </div>
     </footer>
   );
 }
+
