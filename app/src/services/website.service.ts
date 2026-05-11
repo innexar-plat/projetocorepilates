@@ -14,6 +14,8 @@ export type Plan = {
 export type PilatesClass = {
   id: string;
   title: string;
+  description?: string | null;
+  imageUrl?: string | null;
   instructor: string;
   dayOfWeek: string;
   startTime: string;

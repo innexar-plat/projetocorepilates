@@ -19,6 +19,7 @@ const EMPTY_FORM: CreateClassDto = {
   dayOfWeek: 'MONDAY',
   startTime: '08:00',
   isActive: true,
+  imageUrl: '',
 };
 
 function Toast({ message }: { message: string }) {
@@ -75,6 +76,7 @@ export function AdminClassesContent() {
       dayOfWeek: c.dayOfWeek,
       startTime: c.startTime,
       isActive: c.isActive,
+      imageUrl: c.imageUrl ?? '',
     });
     setEditTarget(c);
     setShowCreateModal(true);
@@ -215,6 +217,24 @@ export function AdminClassesContent() {
               onChange={(e) => setField('instructor', e.target.value)}
               className="w-full rounded-lg border border-[#d4e2e5] px-3 py-2 text-sm outline-none focus:border-[#3c8ea8]"
             />
+          </div>
+          <div className="col-span-2">
+            <label className="mb-1 block text-xs font-medium text-[#5f7480]">Class Photo URL</label>
+            <input
+              type="text"
+              placeholder="/my-class-photo.jpg or https://..."
+              value={form.imageUrl ?? ''}
+              onChange={(e) => setField('imageUrl', e.target.value)}
+              className="w-full rounded-lg border border-[#d4e2e5] px-3 py-2 text-sm outline-none focus:border-[#3c8ea8]"
+            />
+            {form.imageUrl && (
+              <img
+                src={form.imageUrl}
+                alt="Preview"
+                className="mt-2 h-24 w-full rounded-lg object-cover border border-[#d4e2e5]"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            )}
           </div>
           <div>
             <label className="mb-1 block text-xs font-medium text-[#5f7480]">{t('fieldDay')}</label>

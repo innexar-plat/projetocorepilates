@@ -18,66 +18,12 @@ function getClassImage(title: string): string {
   if (t.includes('flow')) return '/flowpilates.jpg';
   if (t.includes('burn')) return '/Core+Burn+-94.webp';
   if (t.includes('boot')) return '/brazilianbooty.webp';
-  if (t.includes('upper') || t.includes('body')) return '/upper-boody.jfif';
+  if (t.includes('upper') || t.includes('upper body')) return '/upper-boody.jfif';
   if (t.includes('conditioning') || t.includes('fitness')) return '/FitConditioning.jpg';
   if (t.includes('ball')) return '/ideia1.jpeg';
   if (t.includes('equipment') || t.includes('intro') || t.includes('reformer')) return '/ideia2.jpeg';
   return '/ideia3.jpeg';
 }
-
-/* â”€â”€ Static class types catalog (shown on home as visual grid) â”€â”€ */
-const CLASS_TYPES = [
-  {
-    name: 'Classic Mat Pilatesâ„¢',
-    desc: 'A timeless full-body class that improves strength, posture, flexibility, balance, and body awareness.',
-    img: '/MAT-Pilates-com-acessÃ³rios-CAPA.jpg',
-  },
-  {
-    name: 'Classical Pilates Ballâ„¢',
-    desc: 'Enhances core strength, stability, coordination and flexibility using the Pilates ball for deeper muscle activation.',
-    img: '/ideia1.jpeg',
-  },
-  {
-    name: 'Brazilian Flow Pilatesâ„¢',
-    desc: 'A fluid and energizing class that blends strength, mobility, posture and rhythm for graceful movement.',
-    img: '/flowpilates.jpg',
-  },
-  {
-    name: 'Brazilian Burnâ„¢',
-    desc: 'A high-energy conditioning class that elevates endurance, burns calories and builds lean strength with intensity.',
-    img: '/Core+Burn+-94.webp',
-  },
-  {
-    name: 'Brazilian Bootâ„¢',
-    desc: 'Lower body sculpting focused on glutes, legs, hips and pelvic stability.',
-    img: '/brazilianbooty.webp',
-  },
-  {
-    name: 'Brazilian Upper Bodyâ„¢',
-    desc: 'Strengthen and tone your upper body with targeted exercises for arms, shoulders, back, chest and posture.',
-    img: '/upper-boody.jfif',
-  },
-  {
-    name: 'Brazilian Fitness Conditioningâ„¢',
-    desc: 'Dynamic full-body training that improves strength, endurance, agility, and overall performance.',
-    img: '/FitConditioning.jpg',
-  },
-  {
-    name: 'Intro Equipment Experienceâ„¢',
-    desc: 'Introduction to Reformer, Cadillac, Chair, Barrel and Mat. Learn, explore and build confidence with every piece of equipment.',
-    img: '/ideia2.jpeg',
-  },
-  {
-    name: 'Private Sessionâ„¢',
-    desc: 'One-on-one personalized training tailored to your goals, needs, and fitness level.',
-    img: '/ideia3.jpeg',
-  },
-  {
-    name: 'Duet / Semi-Private Sessionâ„¢',
-    desc: 'Train with a partner and enjoy personalized attention in a motivating and supportive environment.',
-    img: '/fundobraziliancorepilates.png',
-  },
-] as const;
 
 /* â”€â”€ Section separator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
@@ -157,74 +103,53 @@ export function WebsiteHomeContent() {
 
   return (
     <>
-      {/* â”€â”€ OUR CLASSES section with image cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── OUR CLASSES ─ photos managed via admin panel ───────────── */}
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6">
         <FadeIn variant="up">
           <SectionTitle title="OUR CLASSES" subtitle="50 MINUTES EACH" />
         </FadeIn>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-          {CLASS_TYPES.map((cls, i) => (
-            <FadeIn key={cls.name} variant="up" delay={((i % 3) + 1) as 1 | 2 | 3}>
-              <Link href="/aulas" locale={locale}>
-                <article className="group cursor-pointer overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-brand)]/30">
-                  <div className="relative h-44 overflow-hidden bg-[var(--color-paper-2)]">
-                    <img
-                      src={cls.img}
-                      alt={cls.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.12em] text-[var(--color-ink)] leading-tight">
-                      {cls.name}
-                    </h3>
-                    <p className="mt-2 text-[11px] leading-relaxed text-[var(--color-muted)] line-clamp-3">
-                      {cls.desc}
-                    </p>
-                  </div>
-                </article>
-              </Link>
-            </FadeIn>
-          ))}
-        </div>
-
-        {/* Senior Class â€” full width banner */}
-        <FadeIn variant="up" className="mt-6">
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-ink)] p-6 sm:p-8">
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'url(/fundobraziliancorepilates.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-            <div className="absolute inset-0 bg-[var(--color-ink)]/80" />
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
-              <div className="flex-1">
-                <h3 className="text-lg font-black uppercase tracking-[0.14em] text-white">
-                  Senior Classâ„¢
-                </h3>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70">
-                  A safe, supportive and effective class designed to improve mobility, balance, strength, flexibility and confidence. Ideal for active aging and enhancing quality of life through mindful movement.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-6">
-                {[
-                  { label: 'Improves Mobility' },
-                  { label: 'Builds Strength' },
-                  { label: 'Enhances Balance' },
-                  { label: 'Supports Active Living' },
-                ].map((item) => (
-                  <div key={item.label} className="flex flex-col items-center gap-1.5 text-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-brand)]/40 bg-[var(--color-brand)]/15">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-[var(--color-brand)]">
-                        <circle cx="12" cy="8" r="4" /><path d="M20 21a8 8 0 10-16 0" />
-                      </svg>
-                    </div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/70 whitespace-nowrap">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {classes.isLoading && (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-64 animate-pulse rounded-2xl bg-[var(--color-paper-2)]" />
+            ))}
           </div>
-        </FadeIn>
+        )}
+
+        {!classes.isLoading && (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            {Array.from(
+              new Map((classes.data ?? []).map((c) => [c.title, c])).values()
+            ).map((cls, i) => (
+              <FadeIn key={cls.id} variant="up" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <Link href="/aulas" locale={locale}>
+                  <article className="group cursor-pointer overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-brand)]/30">
+                    <div className="relative h-44 overflow-hidden bg-[var(--color-paper-2)]">
+                      <img
+                        src={cls.imageUrl ?? getClassImage(cls.title)}
+                        alt={cls.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-[11px] font-black uppercase tracking-[0.12em] text-[var(--color-ink)] leading-tight">
+                        {cls.title}
+                      </h3>
+                      {cls.description && (
+                        <p className="mt-2 text-[11px] leading-relaxed text-[var(--color-muted)] line-clamp-3">
+                          {cls.description}
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                </Link>
+              </FadeIn>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* â”€â”€ Method section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
@@ -264,159 +189,6 @@ export function WebsiteHomeContent() {
 
       {/* Testimonials */}
       <TestimonialsSection />
-
-      {/* â”€â”€ PRICING section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6" id="pricing">
-        <FadeIn variant="up">
-          <SectionTitle title="CHOOSE YOUR EXPERIENCE" />
-        </FadeIn>
-
-        <div className="grid gap-6 lg:grid-cols-[1fr_1fr_1fr_auto]">
-          {/* Intro Equipment */}
-          <FadeIn variant="up" delay={1}>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-white p-6 h-full">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--color-ink)]">
-                Intro Equipment Experienceâ„¢
-              </h3>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[var(--color-brand)] font-semibold">
-                Reformer Â· Cadillac Â· Chair Â· Barrel Â· Mat
-              </p>
-              <div className="mt-5 space-y-3">
-                {[
-                  { label: 'Single Class', price: '$40' },
-                  { label: '4 Classes / 3-Month Contract', price: '$120' },
-                  { label: '8 Classes / 3-Month Contract', price: '$200' },
-                  { label: 'Unlimited Classes / 6-Month', price: '$299/mo' },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[var(--color-border)]/50 last:border-0">
-                    <span className="text-xs text-[var(--color-muted)] uppercase tracking-[0.08em]">{row.label}</span>
-                    <span className="text-sm font-bold text-[var(--color-brand)]">{row.price}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* Pilates Ball & Conditioning â€” featured */}
-          <FadeIn variant="up" delay={2}>
-            <div className="rounded-2xl border-2 border-[var(--color-ink)] bg-[var(--color-ink)] p-6 text-white h-full">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.14em] text-white">
-                Pilates Ball & Brazilian Fitness Conditioningâ„¢
-              </h3>
-              <div className="mt-5 space-y-3">
-                {[
-                  { label: 'Single Class', price: '$40' },
-                  { label: '4 Classes / 3-Month Contract', price: '$120' },
-                  { label: '8 Classes / 3-Month Contract', price: '$200' },
-                  { label: 'Unlimited Classes / 6-Month', price: '$249/mo' },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
-                    <span className="text-xs text-white/60 uppercase tracking-[0.08em]">{row.label}</span>
-                    <span className="text-sm font-bold text-[var(--color-brand)]">{row.price}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* All Classes */}
-          <FadeIn variant="up" delay={3}>
-            <div className="rounded-2xl border border-[var(--color-border)] bg-white p-6 h-full">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--color-ink)]">
-                All Classes â€” Unlimited Access
-              </h3>
-              <div className="mt-5 space-y-3">
-                {[
-                  { label: 'Single Class', price: '$40' },
-                  { label: '4 Classes / 3-Month Contract', price: '$140' },
-                  { label: '8 Classes / 3-Month Contract', price: '$240' },
-                  { label: 'Unlimited Classes / 6-Month', price: '$299/mo' },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[var(--color-border)]/50 last:border-0">
-                    <span className="text-xs text-[var(--color-muted)] uppercase tracking-[0.08em]">{row.label}</span>
-                    <span className="text-sm font-bold text-[var(--color-brand)]">{row.price}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* Private & Duet */}
-          <FadeIn variant="up" delay={3}>
-            <div className="min-w-[200px] space-y-4 lg:max-w-[240px]">
-              <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[var(--color-brand)]">
-                    <circle cx="12" cy="8" r="4" /><path d="M20 21a8 8 0 10-16 0" />
-                  </svg>
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--color-ink)]">Private Sessions</h4>
-                </div>
-                {[
-                  { label: 'Single Private Class', price: '$80' },
-                  { label: '3 Private Classes', price: '$175' },
-                  { label: '5 Private Classes', price: '$375' },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[var(--color-border)]/50 last:border-0">
-                    <span className="text-[11px] text-[var(--color-muted)]">{row.label}</span>
-                    <span className="text-sm font-bold text-[var(--color-brand)]">{row.price}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[var(--color-brand)]">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-                  </svg>
-                  <h4 className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--color-ink)]">Duet / Semi-Private</h4>
-                </div>
-                {[
-                  { label: 'Single Class (per person)', price: '$55' },
-                  { label: '5-Class Package (per person)', price: '$250' },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[var(--color-border)]/50 last:border-0">
-                    <span className="text-[11px] text-[var(--color-muted)]">{row.label}</span>
-                    <span className="text-sm font-bold text-[var(--color-brand)]">{row.price}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Plans from API */}
-        {((plans.data ?? []).length > 0) && (
-          <>
-            <div className="mt-16">
-              <FadeIn variant="up" className="text-center">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-brand)]">{t('plans.eyebrow')}</p>
-                <h2 className="mt-2 text-2xl font-bold text-[var(--color-ink)]" style={{ fontFamily: 'var(--font-display), Georgia, serif', letterSpacing: '-0.025em' }}>
-                  {t('plans.title')}
-                </h2>
-              </FadeIn>
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {(plans.data ?? []).slice(0, 3).map((plan) => (
-                <div key={plan.id} className="rounded-2xl border border-[var(--color-border)] bg-white p-5">
-                  <p className="font-bold text-[var(--color-ink)]">{plan.name}</p>
-                  <p className="mt-1 text-2xl font-black text-[var(--color-brand)]">
-                    ${plan.price}<span className="text-sm font-semibold text-[var(--color-muted)]">/mo</span>
-                  </p>
-                  {plan.description && <p className="mt-2 text-xs text-[var(--color-muted)]">{plan.description}</p>}
-                  <Link href="/planos" locale={locale} className="mt-4 block w-full rounded-full bg-[var(--color-brand)] py-2.5 text-center text-xs font-bold uppercase tracking-[0.12em] text-white hover:bg-[var(--color-brand-dark)] transition-colors">
-                    {t('plans.cta')}
-                  </Link>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 text-center">
-              <Link href="/planos" locale={locale} className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-brand)] hover:underline">
-                {t('plans.viewAll')} â†’
-              </Link>
-            </div>
-          </>
-        )}
-      </section>
 
       {/* â”€â”€ Live schedule â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {(dayEntries.length > 0 || classes.isLoading) && (

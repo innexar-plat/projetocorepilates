@@ -5,6 +5,7 @@ const DAYS_OF_WEEK = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'S
 export const createClassSchema = z.object({
   title: z.string().min(2).max(100),
   description: z.string().max(500).optional(),
+  imageUrl: z.string().max(500).optional(),
   instructor: z.string().min(2).max(100),
   maxCapacity: z.number().int().min(1).max(100).default(10),
   durationMin: z.number().int().min(15).max(240).default(60),
@@ -16,6 +17,7 @@ export const createClassSchema = z.object({
 export const updateClassSchema = z.object({
   title: z.string().min(2).max(100).optional(),
   description: z.string().max(500).optional(),
+  imageUrl: z.string().max(500).optional(),
   instructor: z.string().min(2).max(100).optional(),
   maxCapacity: z.number().int().min(1).max(100).optional(),
   durationMin: z.number().int().min(15).max(240).optional(),

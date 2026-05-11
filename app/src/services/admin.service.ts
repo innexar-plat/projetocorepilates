@@ -160,6 +160,7 @@ export type AdminClass = {
   id: string;
   title: string;
   description?: string;
+  imageUrl?: string;
   instructor: string;
   maxCapacity: number;
   durationMin: number;
@@ -172,6 +173,7 @@ export type AdminClass = {
 export type CreateClassDto = {
   title: string;
   description?: string;
+  imageUrl?: string;
   instructor: string;
   maxCapacity: number;
   durationMin: number;
