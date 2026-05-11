@@ -55,7 +55,7 @@ export interface UploadResult {
 export async function uploadImage(
   file: Buffer,
   mimeType: string,
-  folder: 'gallery' | 'posts' | 'avatars',
+  folder: 'gallery' | 'posts' | 'avatars' | 'classes',
   sizeBytes: number,
 ): Promise<UploadResult> {
   if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(mimeType)) {

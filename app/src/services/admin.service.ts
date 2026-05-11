@@ -184,6 +184,15 @@ export type CreateClassDto = {
 
 export type UpdateClassDto = Partial<CreateClassDto>;
 
+export type ClassPhotoUploadResult = {
+  url: string;
+  filename: string;
+};
+
+export type ClassImageByTitleUpdateResult = {
+  updatedCount: number;
+};
+
 // ── Sessions ──────────────────────────────────────────────────────────────────
 
 export type AdminSession = {
@@ -396,6 +405,19 @@ export const adminService = {
 
   async deactivateClass(id: string): Promise<void> {
     await httpDelete(`/api/v1/classes/${id}`);
+  },
+
+  async uploadClassPhoto(file: File): Promise<ClassPhotoUploadResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return httpPostForm<ClassPhotoUploadResult>('/api/v1/admin/classes/upload-photo', formData);
+  },
+
+  async updateClassImageByTitle(title: string, imageUrl?: string): Promise<ClassImageByTitleUpdateResult> {
+    return httpPatch<ClassImageByTitleUpdateResult, { title: string; imageUrl?: string }>(
+      '/api/v1/classes/image-by-title',
+      { title, imageUrl },
+    );
   },
 
   // Sessions

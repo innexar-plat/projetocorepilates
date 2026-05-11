@@ -5,9 +5,9 @@ import { useRouter, usePathname } from '@/i18n/navigation';
 import { useTransition, useState, useRef, useEffect } from 'react';
 
 const LANGUAGES = [
-  { code: 'en', label: 'English',   flag: 'EN' },
-  { code: 'pt', label: 'Portugues', flag: 'PT' },
-  { code: 'es', label: 'Espanol',   flag: 'ES' },
+  { code: 'en', label: 'English',   flag: '🇺🇸' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'es', label: 'Español',   flag: '🇪🇸' },
 ] as const;
 
 type Lang = (typeof LANGUAGES)[number]['code'];

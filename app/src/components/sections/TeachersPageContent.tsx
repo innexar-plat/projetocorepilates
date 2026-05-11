@@ -28,31 +28,25 @@ export function TeachersPageContent({ locale }: Props) {
             <article key={teacher.name} className="overflow-hidden rounded-[28px] border border-[var(--color-border)] bg-white shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
               {/* Teacher photo */}
               {photo && (
-                <div className="relative h-72 overflow-hidden bg-[var(--color-paper-2)]">
+                <div className="relative aspect-[4/5] overflow-hidden bg-white">
                   <img
                     src={photo}
                     alt={teacher.name}
                     className="h-full w-full object-cover object-center"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-brand)]">{teacher.role}</p>
-                    <h2 className="mt-1 text-2xl font-black text-white">{teacher.name}</h2>
-                  </div>
                 </div>
               )}
 
               <div className="p-7">
+                <div className="mb-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-brand)]">{teacher.role}</p>
+                  <h2 className="mt-1 text-2xl font-black text-[var(--color-ink)]">{teacher.name}</h2>
+                </div>
+
                 {!photo && (
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--color-brand)]/12 text-xl font-black text-[var(--color-brand)]">
-                      {teacher.name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-brand)]">{teacher.role}</p>
-                      <h2 className="mt-1 text-2xl font-black text-[var(--color-ink)]">{teacher.name}</h2>
-                    </div>
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-brand)]/12 text-xl font-black text-[var(--color-brand)]">
+                    {teacher.name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                 )}
 

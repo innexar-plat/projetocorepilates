@@ -43,7 +43,7 @@ export function AdminShell({ locale, children }: Props) {
 
   return (
     <div className="flex min-h-screen bg-[#f3f8fa]">
-      {/* â”€â”€ Mobile overlay â”€â”€ */}
+      {/* Mobile overlay */}
       {open && (
         <div
           className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
@@ -51,7 +51,7 @@ export function AdminShell({ locale, children }: Props) {
         />
       )}
 
-      {/* â”€â”€ Sidebar â”€â”€ */}
+      {/* Sidebar */}
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-30 flex w-64 flex-col',
@@ -131,7 +131,7 @@ export function AdminShell({ locale, children }: Props) {
         </div>
       </aside>
 
-      {/* â”€â”€ Content â”€â”€ */}
+      {/* Content */}
       <div className="flex flex-1 flex-col md:ml-64">
         {/* Top bar */}
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-[#e5dfc9] bg-white/80 px-6 backdrop-blur-md">

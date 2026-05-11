@@ -61,7 +61,7 @@ export function GrandOpeningPopup({ locale }: Readonly<Props>) {
         {/* Scrollable body */}
         <div className="overflow-y-auto max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3rem)]">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-            {/* Left â€” event info */}
+            {/* Left - event info */}
             <div className="bg-[linear-gradient(180deg,rgba(22,30,36,1),rgba(28,40,46,0.98))] p-6 text-white sm:p-8">
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
@@ -124,7 +124,7 @@ export function GrandOpeningPopup({ locale }: Readonly<Props>) {
                 <ul className="mt-3 space-y-2 text-sm text-white/80">
                   {copy.highlights.map((item) => (
                     <li key={item} className="flex gap-2">
-                      <span className="mt-0.5 shrink-0 text-[var(--color-brand)]">â€¢</span>
+                      <span className="mt-0.5 shrink-0 text-[var(--color-brand)]">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -148,7 +148,7 @@ export function GrandOpeningPopup({ locale }: Readonly<Props>) {
               </div>
             </div>
 
-            {/* Right â€” form */}
+            {/* Right - form */}
             <div id="popup-pre-registration-form" className="p-6 sm:p-8">
               <PreRegistrationCard
                 locale={locale}

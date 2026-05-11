@@ -40,20 +40,20 @@ const DAY_LABEL_LOCALE: Record<Locale, Record<string, string>> = {
   en: DAY_LABEL,
   pt: {
     MONDAY: 'Segunda-feira',
-    TUESDAY: 'Terca-feira',
+    TUESDAY: 'Terça-feira',
     WEDNESDAY: 'Quarta-feira',
     THURSDAY: 'Quinta-feira',
     FRIDAY: 'Sexta-feira',
-    SATURDAY: 'Sabado',
+    SATURDAY: 'Sábado',
     SUNDAY: 'Domingo',
   },
   es: {
     MONDAY: 'Lunes',
     TUESDAY: 'Martes',
-    WEDNESDAY: 'Miercoles',
+    WEDNESDAY: 'Miércoles',
     THURSDAY: 'Jueves',
     FRIDAY: 'Viernes',
-    SATURDAY: 'Sabado',
+    SATURDAY: 'Sábado',
     SUNDAY: 'Domingo',
   },
 };
@@ -192,7 +192,10 @@ export function ClassesCatalog() {
                       {dayItems.map((item) => {
                       const gradientClass = DAY_COLORS[item.dayOfWeek] ?? 'from-[var(--color-brand)]/10 to-[var(--color-brand)]/5 border-[var(--color-brand)]/20';
                       const dotClass = DAY_DOT[item.dayOfWeek] ?? 'bg-[var(--color-brand)]';
-                      const dayImage = DAY_IMAGE[item.dayOfWeek] ?? DAY_IMAGE.MONDAY;
+                      const dayImage =
+                        (typeof item.imageUrl === 'string' && item.imageUrl.trim().length > 0
+                          ? item.imageUrl.trim()
+                          : DAY_IMAGE[item.dayOfWeek]) ?? DAY_IMAGE.MONDAY;
                       const initials = item.instructor.split(' ').map((w: string) => w[0]).join('').slice(0,2).toUpperCase();
 
                       return (

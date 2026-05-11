@@ -29,7 +29,7 @@ export function SiteNav({ locale }: Readonly<Props>) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-[0_4px_20px_rgba(15,23,42,0.06)] backdrop-blur-sm backdrop-saturate-150 transition-all duration-300',
+        'sticky top-0 z-40 border-b border-white/45 bg-[rgba(255,248,238,0.52)] shadow-[0_10px_30px_rgba(15,23,42,0.16)] backdrop-blur-2xl backdrop-saturate-125 transition-all duration-300',
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -61,7 +61,7 @@ export function SiteNav({ locale }: Readonly<Props>) {
                   'relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200',
                   active
                     ? 'text-[var(--color-ink)] bg-[var(--color-paper-2)]'
-                    : 'text-[var(--color-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-paper-2)]/60',
+                    : 'text-[var(--color-ink)]/80 hover:text-[var(--color-ink)] hover:bg-[var(--color-paper-2)]/70',
                   'after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:h-0.5 after:rounded-full after:bg-[var(--color-brand)]',
                   active ? 'after:w-4' : 'after:w-0 hover:after:w-4 after:transition-all after:duration-300',
                 )}
@@ -80,7 +80,7 @@ export function SiteNav({ locale }: Readonly<Props>) {
             locale={locale}
             className={cn(
               'rounded-lg border px-4 py-1.5 text-sm font-medium transition-colors duration-200',
-              'border-[var(--color-border)] text-[var(--color-muted)] hover:border-[var(--color-brand)] hover:text-[var(--color-brand)]',
+              'border-[var(--color-border)]/90 text-[var(--color-ink)]/85 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)]',
             )}
           >
             {t('login')}
@@ -118,7 +118,7 @@ export function SiteNav({ locale }: Readonly<Props>) {
         className={cn(
           'lg:hidden overflow-hidden transition-all duration-300 ease-in-out',
           open ? 'max-h-[420px] opacity-100' : 'max-h-0 opacity-0',
-          'border-t border-[var(--color-border)]/60 bg-white/98',
+          'border-t border-white/45 bg-[rgba(255,248,238,0.62)] backdrop-blur-2xl',
         )}
       >
         <nav className="flex flex-col gap-1 px-4 py-3">

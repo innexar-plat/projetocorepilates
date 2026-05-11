@@ -87,22 +87,22 @@ const CONTENT: Record<Locale, MarketingContent> = {
     teachersNavLabel: 'Teachers',
     preRegisterLabel: 'Pre-register',
     methodSection: {
-      eyebrow: 'Introduction',
-      title: 'Where Classical Pilates Meets Brazilian Energy',
-      subtitle: 'Welcome to Brazilian Core Pilates',
+      eyebrow: 'The Method',
+      title: 'The Brazilian Core Pilates Method',
+      subtitle: 'Where classical movement meets Brazilian soul',
       intro:
-        'Brazilian Core Pilates is a boutique studio created to offer more than exercise. We deliver an elevated experience of movement, strength, posture and confidence for every stage of life.',
+        'Together, Fernanda Santos and Cleide Ostroff created the Brazilian Core Pilates Method - an exclusive fusion of classical movement principles with the fluidity, rhythm, energy, and sophistication of Brazilian movement culture.',
       philosophy:
-        'Our method blends the foundations of classical Pilates with a unique Brazilian touch: energy, elegance, rhythm and care in every detail. From beginners to active aging clients, each session is designed to help you feel stronger, more balanced and connected to your body.',
+        'More than exercise, Brazilian Core Pilates is a movement philosophy designed to transform the body through strength, posture, balance, flexibility, mindfulness, and intentional movement.',
       missionTitle: 'Our mission',
       missionText:
-        'At Brazilian Core Pilates, we believe Pilates is not just a sequence of exercises. It is a lifestyle, a philosophy and a powerful way to transform the body from the inside out. Our mission is to help you move with purpose, strengthen your core, improve your posture and feel confident in your own body.',
+        'Brazilian Core Pilates - where classical movement meets Brazilian soul.',
     },
     teacherPage: {
       eyebrow: 'Meet the founders',
-      title: 'Teachers who lead with care, precision and Brazilian energy',
+      title: 'Founders who lead with precision, purpose and Brazilian energy',
       subtitle:
-        'Brazilian Core Pilates is led by two founders focused on personalized movement, welcoming guidance and a premium studio experience in Sebastian.',
+        'Brazilian Core Pilates is led by two founders who blend movement science, wellness expertise, and a refined boutique experience in Sebastian.',
       focusLabel: 'Special focus',
       contactLabel: 'Direct contact',
       ctaTitle: 'Pre-register before full enrollment opens',
@@ -116,8 +116,8 @@ const CONTENT: Record<Locale, MarketingContent> = {
           phoneLabel: '(772) 404-9031',
           phoneHref: '17724049031',
           bio:
-            'Fernanda guides clients with a calm, structured approach focused on posture, confidence and sustainable strength. Her classes balance technique, encouragement and close attention to each body.',
-          focus: ['Foundational Pilates', 'Posture and mobility', 'Welcoming first-time clients'],
+            'Fernanda Santos brings strength, discipline, and movement expertise to Brazilian Core Pilates. A Black Belt in Jiu-Jitsu, Personal Trainer, Pilates Instructor, and Massage Therapist with more than 12 years of experience, Fernanda combines technical precision with deep body awareness and functional movement training. Her passion for movement, performance, rehabilitation, and body conditioning helped shape the foundation of the Brazilian Core Pilates method - creating classes that are powerful, intelligent, and transformative.',
+          focus: ['Functional movement', 'Performance and conditioning', 'Rehabilitation and body awareness'],
         },
         {
           name: 'Cleide Ostroff',
@@ -125,8 +125,8 @@ const CONTENT: Record<Locale, MarketingContent> = {
           phoneLabel: '(321) 490-2035',
           phoneHref: '13214902035',
           bio:
-            'Cleide brings an energetic teaching style centered on purposeful movement, consistency and whole-body awareness. She helps students progress safely while keeping classes motivating and personal.',
-          focus: ['Core strength', 'Functional movement', 'Progressive training plans'],
+            'Cleide Ostroff brings vision, wellness, and a holistic movement philosophy to Brazilian Core Pilates. With a background as a Medical Assistant, Personal Trainer, Pilates Instructor, Psychoanalyst, and entrepreneur for more than 24 years, Cleide combines health, posture, movement, mind-body connection, leadership, and emotional well-being into a refined and transformative movement experience. Her vision was to create more than a studio - a concept where elegance, strength, wellness, and Brazilian energy move together to inspire confidence, balance, and quality of life.',
+          focus: ['Mind-body connection', 'Holistic wellness', 'Leadership and transformation'],
         },
       ],
     },

@@ -26,4 +26,8 @@ export const classesService = {
     await classesService.getById(id);
     return classesRepository.update(id, { isActive: false });
   },
+
+  updateImageByTitle(title: string, imageUrl?: string) {
+    return classesRepository.updateImageByTitle(title, imageUrl);
+  },
 };

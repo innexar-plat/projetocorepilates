@@ -10,6 +10,7 @@ const fakeClass = {
   id: 'class-id-1',
   title: 'Pilates Reformer',
   description: 'Aula avançada',
+  imageUrl: null,
   instructor: 'João Silva',
   maxCapacity: 10,
   durationMin: 60,

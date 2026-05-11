@@ -11,10 +11,10 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 
-/* â”€â”€ Class image mapping by keyword â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Class image mapping by keyword */
 function getClassImage(title: string): string {
   const t = title.toLowerCase();
-  if (t.includes('mat') || t.includes('classic mat')) return '/MAT-Pilates-com-acessÃ³rios-CAPA.jpg';
+  if (t.includes('mat') || t.includes('classic mat')) return '/MAT-Pilates-com-acessórios-CAPA.jpg';
   if (t.includes('flow')) return '/flowpilates.jpg';
   if (t.includes('burn')) return '/Core+Burn+-94.webp';
   if (t.includes('boot')) return '/brazilianbooty.webp';
@@ -25,7 +25,7 @@ function getClassImage(title: string): string {
   return '/ideia3.jpeg';
 }
 
-/* â”€â”€ Section separator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Section title */
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-12 text-center">
@@ -64,9 +64,9 @@ export function WebsiteHomeContent() {
 
   let weekdayLabel: Record<string, string>;
   if (locale === 'pt') {
-    weekdayLabel = { MONDAY: 'Segunda-feira', TUESDAY: 'TerÃ§a-feira', WEDNESDAY: 'Quarta-feira', THURSDAY: 'Quinta-feira', FRIDAY: 'Sexta-feira', SATURDAY: 'SÃ¡bado', SUNDAY: 'Domingo' };
+    weekdayLabel = { MONDAY: 'Segunda-feira', TUESDAY: 'Terça-feira', WEDNESDAY: 'Quarta-feira', THURSDAY: 'Quinta-feira', FRIDAY: 'Sexta-feira', SATURDAY: 'Sábado', SUNDAY: 'Domingo' };
   } else if (locale === 'es') {
-    weekdayLabel = { MONDAY: 'Lunes', TUESDAY: 'Martes', WEDNESDAY: 'MiÃ©rcoles', THURSDAY: 'Jueves', FRIDAY: 'Viernes', SATURDAY: 'SÃ¡bado', SUNDAY: 'Domingo' };
+    weekdayLabel = { MONDAY: 'Lunes', TUESDAY: 'Martes', WEDNESDAY: 'Miércoles', THURSDAY: 'Jueves', FRIDAY: 'Viernes', SATURDAY: 'Sábado', SUNDAY: 'Domingo' };
   } else {
     weekdayLabel = { MONDAY: 'Monday', TUESDAY: 'Tuesday', WEDNESDAY: 'Wednesday', THURSDAY: 'Thursday', FRIDAY: 'Friday', SATURDAY: 'Saturday', SUNDAY: 'Sunday' };
   }
@@ -103,10 +103,10 @@ export function WebsiteHomeContent() {
 
   return (
     <>
-      {/* ── OUR CLASSES ─ photos managed via admin panel ───────────── */}
+      {/* Classes catalog */}
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6">
         <FadeIn variant="up">
-          <SectionTitle title="OUR CLASSES" subtitle="50 MINUTES EACH" />
+          <SectionTitle title={t('classes.title')} subtitle={t('classes.durationLabel')} />
         </FadeIn>
 
         {classes.isLoading && (
@@ -152,7 +152,7 @@ export function WebsiteHomeContent() {
         )}
       </section>
 
-      {/* â”€â”€ Method section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* Method section */}
       <section className="mx-auto w-full max-w-7xl px-4 pb-8 sm:px-6">
         <FadeIn variant="up">
           <div className="grid gap-6 overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-[linear-gradient(135deg,rgba(248,245,238,0.97),rgba(255,255,255,1))] p-6 shadow-[0_25px_70px_rgba(15,23,42,0.07)] lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:p-10">
@@ -190,7 +190,7 @@ export function WebsiteHomeContent() {
       {/* Testimonials */}
       <TestimonialsSection />
 
-      {/* â”€â”€ Live schedule â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* Live schedule */}
       {(dayEntries.length > 0 || classes.isLoading) && (
         <section className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
           <FadeIn variant="up" className="text-center">
@@ -259,13 +259,13 @@ export function WebsiteHomeContent() {
 
           <FadeIn variant="up" delay={3} className="mt-8 text-center">
             <Link href="/aulas" locale={locale} className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-brand)] hover:underline">
-              {t('classes.viewAll')} â†’
+              {t('classes.viewAll')} {'->'}
             </Link>
           </FadeIn>
         </section>
       )}
 
-      {/* â”€â”€ Footer CTA Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* Footer CTA Banner */}
       <section className="mx-auto w-full max-w-7xl px-4 pb-24 sm:px-6">
         <FadeIn variant="scale">
           <div className="relative overflow-hidden rounded-3xl bg-[var(--color-ink)] p-10 text-center sm:p-14">

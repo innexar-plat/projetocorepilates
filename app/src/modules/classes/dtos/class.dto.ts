@@ -26,5 +26,11 @@ export const updateClassSchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+export const updateClassImageByTitleSchema = z.object({
+  title: z.string().min(2).max(100),
+  imageUrl: z.string().max(500).optional(),
+});
+
 export type CreateClassDto = z.infer<typeof createClassSchema>;
 export type UpdateClassDto = z.infer<typeof updateClassSchema>;
+export type UpdateClassImageByTitleDto = z.infer<typeof updateClassImageByTitleSchema>;

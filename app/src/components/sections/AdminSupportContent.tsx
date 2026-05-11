@@ -203,7 +203,7 @@ export function AdminSupportContent() {
         </>
       )}
 
-      {/* â”€â”€ Thread Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* Thread Modal */}
       <Modal
         title={selected ? t('threadTitle', { subject: selected.subject }) : t('threadFallback')}
         open={showThread}

@@ -5,7 +5,8 @@ import { useTranslations } from 'next-intl';
 import { FadeIn } from '@/components/atoms/FadeIn';
 import type { Locale } from '@/i18n/routing';
 
-const PILATES_IMAGE = '/fundobraziliancorepilates.png';
+const PILATES_IMAGE_DESKTOP = '/herocore.png';
+const PILATES_IMAGE_MOBILE = '/heromobile.png';
 
 const FEATURES = [
   {
@@ -50,15 +51,21 @@ export function HeroSection({ locale }: Props) {
   return (
     <>
       {/* ── Hero ───────────────────────────────────────────── */}
-      <section className="relative -mt-16 min-h-[92vh] overflow-hidden flex items-center">
+      <section className="relative -mt-16 flex min-h-[88svh] items-center overflow-hidden sm:min-h-[92vh]">
 
-        {/* Background image */}
+        {/* Background image (mobile keeps full image visible, desktop keeps cinematic crop) */}
+        <div className="absolute inset-0 bg-[#120e09] sm:hidden">
+          <img
+            src={PILATES_IMAGE_MOBILE}
+            alt="Pilates studio"
+            className="h-full w-full object-contain object-top"
+            loading="eager"
+          />
+        </div>
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 hidden bg-cover bg-[position:center_20%] bg-no-repeat sm:block"
           style={{
-            backgroundImage: `url('${PILATES_IMAGE}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 20%',
+            backgroundImage: `url('${PILATES_IMAGE_DESKTOP}')`,
           }}
         />
 
@@ -78,7 +85,7 @@ export function HeroSection({ locale }: Props) {
         />
 
         {/* Content */}
-        <div className="relative mx-auto w-full max-w-7xl px-6 pb-32 pt-48 sm:px-8 lg:pb-40 lg:pt-56">
+        <div className="relative mx-auto w-full max-w-7xl px-6 pb-24 pt-36 sm:px-8 sm:pb-32 sm:pt-48 lg:pb-40 lg:pt-56">
           <div className="max-w-3xl">
 
             <FadeIn variant="up" delay={1}>

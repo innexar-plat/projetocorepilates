@@ -5,7 +5,7 @@ import { routing } from '@/i18n/routing';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-const PUBLIC_SEGMENTS = ['/login', '/cadastro', '/planos', '/checkout', '/blog', '/galeria', '/contato'];
+const PUBLIC_SEGMENTS = ['/login', '/cadastro', '/planos', '/checkout', '/blog', '/galeria', '/contato', '/professores'];
 const SESSION_COOKIE_NAMES = [
   'next-auth.session-token',
   '__Secure-next-auth.session-token',
